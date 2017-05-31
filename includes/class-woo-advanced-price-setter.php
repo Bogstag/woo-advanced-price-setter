@@ -35,7 +35,7 @@ class Woo_Advanced_Price_Setter {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Woo_Advanced_Price_Setter_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Woo_Advanced_Price_Setter_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -44,7 +44,7 @@ class Woo_Advanced_Price_Setter {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var      string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
@@ -53,7 +53,7 @@ class Woo_Advanced_Price_Setter {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -69,7 +69,7 @@ class Woo_Advanced_Price_Setter {
 	public function __construct() {
 
 		$this->plugin_name = 'woo-advanced-price-setter';
-		$this->version = '1.0.0';
+		$this->version     = '1.0.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -153,7 +153,13 @@ class Woo_Advanced_Price_Setter {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'link_settings' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'waps_options_page' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_settings' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_sections' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_fields' );
+		//$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_admin_notices' );
+		//$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_notices_init' );
 	}
 
 	/**
