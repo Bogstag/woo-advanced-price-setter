@@ -160,6 +160,9 @@ class Woo_Advanced_Price_Setter {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_fields' );
 		//$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_admin_notices' );
 		//$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_notices_init' );
+		$this->loader->add_action( 'woocommerce_product_options_pricing', $plugin_admin, 'waps_add_in_price_and_button'
+		);
+		$this->loader->add_action( 'wp_ajax_waps_dryrun', $plugin_admin, 'waps_dryrun' );
 	}
 
 	/**

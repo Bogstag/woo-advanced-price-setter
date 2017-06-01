@@ -13,7 +13,7 @@
  */
 
 if ( ! empty( $atts['label'] ) ) {
-	?><label for="<?php echo esc_attr( $atts['id'] ); ?>"><?php esc_html_e( $atts['label'], 'now-hiring' ); ?>
+	?><label for="<?php echo esc_attr( $atts['id'] ); ?>"><?php esc_html_e( $atts['label'], 'woo-advanced-price-setter' ); ?>
 	: </label><?php
 }
 ?><input
@@ -24,5 +24,5 @@ if ( ! empty( $atts['label'] ) ) {
 	type="<?php echo esc_attr( $atts['type'] ); ?>"
 	value="<?php echo esc_attr( $atts['value'] ); ?>" /><?php
 if ( ! empty( $atts['description'] ) ) {
-	?><span class="description"><?php esc_html_e( $atts['description'], 'now-hiring' ); ?></span><?php
+	?><span class="description"><?php esc_html_e( $atts['description'], 'woo-advanced-price-setter' ); ?></span><?php
 }

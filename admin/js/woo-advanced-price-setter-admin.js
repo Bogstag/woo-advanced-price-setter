@@ -29,19 +29,19 @@
      * practising this, we should strive to set a better example in our own work.
      */
 
-    $('#aps_dryrun').click(function (e) {
+    $('#waps_dryrun').click(function (e) {
 
         e.preventDefault();
 
         var data = {
-            action: 'aps_dryrun',
+            action: 'waps_dryrun',
             current_in_price_dollar: $('#_in_price_dollar').val(),
-            post_id: aps_dryrun_vars.postid
+            post_id: waps_dryrun_vars.postid
         };
-
+console.log('test');
         // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
         $.post(ajaxurl, data, function (response) {
-            jQuery('.aps_dryrun_response').html(response);
+            jQuery('.waps_dryrun_response').html(response);
         });
 
     });
