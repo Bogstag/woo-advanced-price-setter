@@ -38,7 +38,7 @@
             current_in_price_dollar: $('#_in_price_dollar').val(),
             post_id: waps_dryrun_vars.postid
         };
-console.log('test');
+
         // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
         $.post(ajaxurl, data, function (response) {
             jQuery('.waps_dryrun_response').html(response);
