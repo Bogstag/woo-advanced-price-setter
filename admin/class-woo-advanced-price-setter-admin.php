@@ -49,13 +49,13 @@ class Woo_Advanced_Price_Setter_Admin {
 	 *
 	 * @param      string $plugin_name The name of this plugin.
 	 * @param      string $version     The version of this plugin.
+	 * @param      array  $options     Options of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version, $options ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
-		$this->set_options();
+		$this->options     = $options;
 
 	}
 
@@ -67,26 +67,6 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @var array Array with all options and defaults.
 	 */
 	public $options;
-
-	/**
-	 * Sets the class variable $options
-	 */
-	private function set_options() {
-		$this->options                 = get_option( $this->plugin_name . '-options' );
-		$defaults['dollar_rate']       = 1;
-		$defaults['customs_duties']    = 1;
-		$defaults['shipping_cost']     = 70;
-		$defaults['whole_mark_1_from'] = 0;
-		$defaults['whole_mark_1_to']   = 1200;
-		$defaults['whole_mark_1_mark'] = 1.25;
-		$defaults['whole_mark_2_from'] = 1200;
-		$defaults['whole_mark_2_to']   = 2000;
-		$defaults['whole_mark_2_mark'] = 1.2;
-		$defaults['whole_mark_3_from'] = 2000;
-		$defaults['whole_mark_3_to']   = 99999999999999;
-		$defaults['whole_mark_3_mark'] = 1.18;
-		$this->options                 = wp_parse_args( $this->options, $defaults );
-	}
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -134,24 +114,6 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
-	 * Adds a link to the plugin settings page
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $links The current array of links.
-	 *
-	 * @return array The modified array of links
-	 */
-	public function link_settings( $links ) {
-		$links[] = sprintf( '<a href="%s">%s</a>',
-			esc_url( admin_url( 'options-general.php?page=' . $this->plugin_name ) ),
-			esc_html__( 'Settings', 'woo-advanced-price-setter' )
-		);
-
-		return $links;
-	}
-
-	/**
 	 * Format numbers to match woo specs.
 	 *
 	 * @param float $number Run numbers thru woo validator.
@@ -160,18 +122,6 @@ class Woo_Advanced_Price_Setter_Admin {
 	 */
 	public function format_number( $number ) {
 		return wc_format_decimal( $number, false, false );
-	}
-
-	/**
-	 * Registers plugin settings
-	 *
-	 * @since        1.0.0
-	 * @return        void
-	 */
-	public function register_settings() {
-		register_setting( $this->plugin_name . '-options', $this->plugin_name . '-options',
-			[ $this, 'validate_options' ]
-		);
 	}
 
 	/**
@@ -185,205 +135,6 @@ class Woo_Advanced_Price_Setter_Admin {
 		$options['dollar_rate'] = $this->format_number( $options['dollar_rate'] );
 
 		return $options;
-	}
-
-	/**
-	 * Registers settings sections with WordPress
-	 */
-	public function register_sections() {
-		add_settings_section( $this->plugin_name . '-calculating-options',
-			apply_filters( $this->plugin_name . 'section_calculating_options',
-				esc_html__( 'Calculating options', 'woo-advanced-price-setter' )
-			), [ $this, 'section_calculating_options' ], $this->plugin_name
-		);
-
-		add_settings_section( $this->plugin_name . '-wholesale-mark',
-			apply_filters( $this->plugin_name . 'section_wholesale_mark',
-				esc_html__( 'Wholesale mark', 'woo-advanced-price-setter' )
-			), [ $this, 'section_wholesale_mark' ], $this->plugin_name
-		);
-
-		add_settings_section( $this->plugin_name . '-general-options',
-			apply_filters( $this->plugin_name . 'section_general_options',
-				esc_html__( 'General options', 'woo-advanced-price-setter' )
-			), [ $this, 'section_general_options' ], $this->plugin_name
-		);
-	}
-
-	/**
-	 *
-	 */
-	public function section_calculating_options() {
-		echo '<p>This options affect everything.</p>';
-	}
-
-	/**
-	 *
-	 */
-	public function section_wholesale_mark() {
-		echo '<p>This settings adds wholesale mark</p>';
-	}
-
-	/**
-	 *
-	 */
-	public function section_general_options() {
-		echo '<p>This no not do anything</p>';
-	}
-
-	/**
-	 *
-	 */
-	public function register_fields() {
-		add_settings_field( 'option_dollar_rate', apply_filters( $this->plugin_name . 'label_dollar_rate',
-			esc_html__( 'Dollar exchange rate', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-calculating-options', [
-				'description' => 'Enter the dollar exchange rate here.',
-				'id'          => 'dollar_rate',
-				'value'       => $this->options['dollar_rate'],
-				'class'       => 'wc_input_price',
-			]
-		);
-
-		add_settings_field( 'option_customs_duties', apply_filters( $this->plugin_name . 'label_customs_duties',
-			esc_html__( 'Customs duties', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-calculating-options', [
-				'description' => 'Enter the customs duties. (1 is default, 1.10 is 10% increase)',
-				'id'          => 'customs_duties',
-				'value'       => $this->options['customs_duties'],
-			]
-		);
-
-		add_settings_field( 'option_shipping_cost', apply_filters( $this->plugin_name . 'label_shipping_cost',
-			esc_html__( 'Shipping cost', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-calculating-options', [
-				'description' => 'Shipping cost in ' . get_woocommerce_currency_symbol() . ' per kg',
-				'id'          => 'shipping_cost',
-				'value'       => $this->options['shipping_cost'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_1_from', apply_filters( $this->plugin_name . 'label_whole_mark_1_from',
-			esc_html__( 'Segment 1 From', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'If price is more or equal to this',
-				'id'          => 'whole_mark_1_from',
-				'value'       => $this->options['whole_mark_1_from'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_1_to', apply_filters( $this->plugin_name . 'label_whole_mark_1_to',
-			esc_html__( 'Segment 1 To', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'and if price is less than this',
-				'id'          => 'whole_mark_1_to',
-				'value'       => $this->options['whole_mark_1_to'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_1_mark', apply_filters( $this->plugin_name . 'label_whole_mark_1_mark',
-			esc_html__( 'Segment 1 Mark', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'then add this mark on price. (1.25 is 25% increase)',
-				'id'          => 'whole_mark_1_mark',
-				'value'       => $this->options['whole_mark_1_mark'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_2_from', apply_filters( $this->plugin_name . 'label_whole_mark_2_from',
-			esc_html__( 'Segment 2 From', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'If price is more or equal to this',
-				'id'          => 'whole_mark_2_from',
-				'value'       => $this->options['whole_mark_2_from'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_2_to', apply_filters( $this->plugin_name . 'label_whole_mark_2_to',
-			esc_html__( 'Segment 2 To', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'and if price is less than this',
-				'id'          => 'whole_mark_2_to',
-				'value'       => $this->options['whole_mark_2_to'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_2_mark', apply_filters( $this->plugin_name . 'label_whole_mark_2_mark',
-			esc_html__( 'Segment 2 Mark', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'then add this mark on price. (1.20 is 20% increase)',
-				'id'          => 'whole_mark_2_mark',
-				'value'       => $this->options['whole_mark_2_mark'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_3_from', apply_filters( $this->plugin_name . 'label_whole_mark_3_from',
-			esc_html__( 'Segment 3 From', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'If price is more or equal to this',
-				'id'          => 'whole_mark_3_from',
-				'value'       => $this->options['whole_mark_3_from'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_3_to', apply_filters( $this->plugin_name . 'label_whole_mark_3_to',
-			esc_html__( 'Segment 3 To', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'and if price is less than this',
-				'id'          => 'whole_mark_3_to',
-				'value'       => $this->options['whole_mark_3_to'],
-			]
-		);
-
-		add_settings_field( 'option_whole_mark_3_mark', apply_filters( $this->plugin_name . 'label_whole_mark_3_mark',
-			esc_html__( 'Segment 3 Mark', 'woo-advanced-price-setter' )
-		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-wholesale-mark', [
-				'description' => 'then add this mark on price. (1.18 is 18% increase)',
-				'id'          => 'whole_mark_3_mark',
-				'value'       => $this->options['whole_mark_3_mark'],
-			]
-		);
-	}
-
-	/**
-	 * Creates a text field
-	 *
-	 * @param    array $args The arguments for the field.
-	 */
-	public function field_text( $args ) {
-		$defaults['class']       = 'text';
-		$defaults['description'] = '';
-		$defaults['label']       = '';
-		$defaults['name']        = $this->plugin_name . '-options[' . $args['id'] . ']';
-		$defaults['placeholder'] = '';
-		$defaults['type']        = 'text';
-		$defaults['value']       = '';
-		apply_filters( $this->plugin_name . '_field_text_options_defaults', $defaults );
-		$atts = wp_parse_args( $args, $defaults );
-		if ( ! empty( $this->options[ $atts['id'] ] ) ) {
-			$atts['value'] = $this->options[ $atts['id'] ];
-		}
-		include( plugin_dir_path( __FILE__ ) . 'partials/' . $this->plugin_name . '-admin-field-text.php' );
-	}
-
-	/**
-	 * Creates the options page
-	 *
-	 * @since        1.0.0
-	 * @return        void
-	 */
-	public function page_options() {
-
-		include( plugin_dir_path( __FILE__ ) . 'partials/' . $this->plugin_name . '-admin-page-settings.php' );
-	}
-
-	/**
-	 * Create the settings page.
-	 */
-	public function waps_options_page() {
-		add_options_page( 'WooCommerce Advanced Price Setter Settings', 'WAPS Settings', 'manage_options',
-			$this->plugin_name, [ $this, 'page_options' ]
-		);
 	}
 
 	public function waps_add_in_price_and_button() {
@@ -410,11 +161,17 @@ class Woo_Advanced_Price_Setter_Admin {
 		echo '<div class="waps_dryrun_response">&nbsp;</div>';
 	}
 
-	public function waps_variable_add_in_price_and_button($loop, $variation_data, $variation) {
+	public function waps_variable_add_in_price_and_button( $loop, $variation_data, $variation ) {
+		if ( isset( $variation_data['_in_price_dollar'][0] ) ) {
+			$value = esc_attr( $variation_data['_in_price_dollar'][0] );
+		} else {
+			$value = null;
+		}
 		woocommerce_wp_text_input( [
 				'id'        => '_in_price_dollar_' . $variation->ID,
 				'label'     => esc_html__( 'WAPS product prince', 'woo-advanced-price-setter' ) . ' ($)',
 				'data_type' => 'price',
+				'value'     => $value,
 			]
 		);
 		//submit_button( esc_html__( 'WAPS Dry Run', 'woo-advanced-price-setter' ), 'button small', 'waps_dryrun', false
@@ -469,10 +226,10 @@ class Woo_Advanced_Price_Setter_Admin {
 		$price = $price * $this->options['dollar_rate'];
 
 		if ( $dryrun ) {
-			echo '<p>Current dollar rate: ' . esc_html( $this->options['dollar_rate']
-				) . ' ' . esc_html( get_woocommerce_currency_symbol() ) . ' per $';
-			echo '<br/>New price after dollar rate calc: ' . esc_html( $price
-				) . ' ' . esc_html( get_woocommerce_currency_symbol() ) . '</p>';
+			echo '<p>Current dollar rate: ' . wc_price( $this->options['dollar_rate']
+				) . ' per $';
+			echo '<br/>New price after dollar rate calc: ' . wc_price( $price
+				) . '</p>';
 		}
 
 		return $price;
@@ -508,16 +265,27 @@ class Woo_Advanced_Price_Setter_Admin {
 		$waps_product_weight_in_kg = wc_get_weight( get_post_meta( $product_id, '_weight', true ), 'kg' );
 
 		if ( empty( $waps_product_weight_in_kg ) || ! $waps_product_weight_in_kg > 0 ) {
-			echo '<p>Customs duties calc skipped, missing product weight</p>';
+			$product = wc_get_product( $product_id );
+			if ( $product->is_type( 'variation' ) ) {
+				if ( $product->get_weight() > 0 ) {
+					$waps_product_weight_in_kg = wc_get_weight( $product->get_weight(), 'kg' );
+				} else {
+					echo '<p>Customs duties calc skipped, missing variation product weight</p>';
 
-			return $price;
+					return $price;
+				}
+			} else {
+				echo '<p>Customs duties calc skipped, missing product weight</p>';
+
+				return $price;
+			}
 		}
 
 		$price = $price + ( $this->options['shipping_cost'] * $waps_product_weight_in_kg );
 
 		if ( $dryrun ) {
-			echo '<p>Current shipping costs: ' . esc_html( $this->options['shipping_cost']
-				) . ' ' . esc_html( get_woocommerce_currency_symbol() ) . ' per kg';
+
+			echo '<p>Current shipping costs: ' . wc_price( $this->options['shipping_cost'] ) . ' per kg';
 			echo '<br/>Product weight in kg: ' . esc_html( $waps_product_weight_in_kg );
 			echo '<br/>Price after shipping costs: ' . esc_html( $price ) . '</p>';
 		}
@@ -582,24 +350,18 @@ class Woo_Advanced_Price_Setter_Admin {
 		}
 	}
 
-	/**
-	 * Save / update meta
-	 *
-	 * @param string $product_id Product Id.
-	 */
-	public function waps_woocommerce_process_product_meta_simple( $product_id ) {
-		$waps_price = $_POST['_in_price_dollar'];
+	public function waps_woocommerce_save_new_waps_price( $product_id ) {
+		$product = wc_get_product( $product_id );
+		if ( $product->is_type( 'variation' ) ) {
+			$waps_price = $_POST[ '_in_price_dollar_' . $product_id ];
+		} else {
+			$waps_price = $_POST['_in_price_dollar'];
+		}
+
 		if ( isset( $waps_price ) && $waps_price > 0 ) {
-			$product = wc_get_product( $product_id ); // Handling variable products.
-			if ( $product->is_type( 'variable' ) ) {
-				$variations = $product->get_available_variations();
-				foreach ( $variations as $variation ) {
-					$this->waps_update_product( $variation['variation_id'], $waps_price );
-				}
-				delete_transient( 'wc_var_prices_' . $product_id );
+			$this->waps_update_product( $product_id, $waps_price );
+			if ( $product->is_type( 'variation' ) ) {
 				WC_Product_Variable::sync( $product_id );
-			} else {
-				$this->waps_update_product( $product_id, $waps_price );
 			}
 		} elseif ( '' === $_POST['_in_price_dollar'] ) {
 			delete_post_meta( $product_id, '_in_price_dollar' );
@@ -619,6 +381,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		} else {
 			update_post_meta( $product_id, '_price', $price );
 		}
+		delete_transient( 'wc_var_prices_' . $product_id );
 	}
 
 	/**
