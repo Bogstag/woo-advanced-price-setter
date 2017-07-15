@@ -121,6 +121,7 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 				esc_html__( 'General options', 'woo-advanced-price-setter' )
 			), [ $this, 'section_general_options' ], $this->plugin_name
 		);
+
 	}
 
 	/**
@@ -297,5 +298,35 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 		add_options_page( 'WooCommerce Advanced Price Setter Settings', 'WAPS Settings', 'manage_options',
 			$this->plugin_name, [ $this, 'page_options' ]
 		);
+	}
+
+	public function waps_options_recalc_button() {
+		wp_register_script( 'waps_recalc', plugin_dir_url( __FILE__ ) . 'js/woo-advanced-price-setter-admin-recalc.js',
+			[ 'jquery' ], $this->version, true
+		);
+		wp_enqueue_script( 'waps_recalc' );
+
+		submit_button( esc_html__( 'WAPS Recalcualate', 'woo-advanced-price-setter' ), 'button small', 'waps_recalc',
+			false
+		);
+		echo '<div class="waps_recalc_response">&nbsp;</div>';
+	}
+
+	public function waps_recalc() {
+		global $wpdb;
+		$ids = $wpdb->get_results( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = '_in_price_dollar' AND meta_value > 0"
+		);
+		echo '<p>Found ' . count( $ids ) . ' products to update.</p>';
+		$plugin_admin = new Woo_Advanced_Price_Setter_Admin( $this->plugin_name, $this->version, $this->options
+		);
+
+		array_map( function ( $id ) use ( $plugin_admin ) {
+			echo '<p>Product id: ' . $id->post_id . ' updating based on price:' . $id->meta_value . '</p>';
+			$plugin_admin->waps_update_product( $id->post_id, $id->meta_value );
+			echo '<p>Product id: ' . $id->post_id . ' updated</p>';
+			echo '<hr>';
+		}, $ids
+		);
+		wp_die();
 	}
 }

@@ -360,9 +360,6 @@ class Woo_Advanced_Price_Setter_Admin {
 
 		if ( isset( $waps_price ) && $waps_price > 0 ) {
 			$this->waps_update_product( $product_id, $waps_price );
-			if ( $product->is_type( 'variation' ) ) {
-				WC_Product_Variable::sync( $product_id );
-			}
 		} elseif ( '' === $_POST['_in_price_dollar'] ) {
 			delete_post_meta( $product_id, '_in_price_dollar' );
 		}
@@ -388,9 +385,10 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @param $product_id
 	 * @param $waps_price
 	 */
-	private function waps_update_product( $product_id, $waps_price ) {
+	public function waps_update_product( $product_id, $waps_price ) {
 		update_post_meta( $product_id, '_in_price_dollar', $waps_price );
 		$price = $this->waps_get_new_product_price( $waps_price, $product_id );
 		$this->waps_update_price( $product_id, $price );
+		WC_Product_Variable::sync( $product_id , 0);
 	}
 }

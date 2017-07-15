@@ -116,7 +116,8 @@ class Woo_Advanced_Price_Setter {
 		/**
 		 * The class responsible for defining all settings in admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woo-advanced-price-setter-admin-settings.php';
+		require_once plugin_dir_path( dirname( __FILE__ )
+		             ) . 'admin/class-woo-advanced-price-setter-admin-settings.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -163,8 +164,11 @@ class Woo_Advanced_Price_Setter {
 		$this->loader->add_action( 'admin_init', $plugin_admin_settings, 'register_settings' );
 		$this->loader->add_action( 'admin_init', $plugin_admin_settings, 'register_sections' );
 		$this->loader->add_action( 'admin_init', $plugin_admin_settings, 'register_fields' );
+		$this->loader->add_action( 'wp_ajax_waps_recalc', $plugin_admin_settings, 'waps_recalc' );
 
-		$plugin_admin = new Woo_Advanced_Price_Setter_Admin( $this->get_plugin_name(), $this->get_version(), $plugin_admin_settings->get_options() );
+		$plugin_admin = new Woo_Advanced_Price_Setter_Admin( $this->get_plugin_name(), $this->get_version(),
+			$plugin_admin_settings->get_options()
+		);
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
