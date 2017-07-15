@@ -73,4 +73,10 @@ function run_woo_advanced_price_setter() {
 
 }
 
-run_woo_advanced_price_setter();
+/**
+ * Check if WooCommerce is active
+ **/
+if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+	run_woo_advanced_price_setter();
+}
+
