@@ -37,7 +37,7 @@ class Woo_Advanced_Price_Setter_i18n {
 		load_plugin_textdomain(
 			'woo-advanced-price-setter',
 			false,
-			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+			dirname(dirname(plugin_basename(__FILE__))) . '/languages/'
 		);
 
 	}
