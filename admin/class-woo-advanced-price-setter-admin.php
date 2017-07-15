@@ -260,6 +260,8 @@ class Woo_Advanced_Price_Setter_Admin {
 	/**
 	 * @param integer $product_id
 	 * @param boolean $dryrun
+	 *
+	 * @return double $price
 	 */
 	private function calc_waps_shipping_cost( $price, $product_id, $dryrun ) {
 		if ( empty( $this->options['shipping_cost'] ) || ! $this->options['shipping_cost'] > 0 ) {
@@ -268,13 +270,13 @@ class Woo_Advanced_Price_Setter_Admin {
 			return $price;
 		}
 
-		$waps_product_weight_in_kg = wc_get_weight( get_post_meta( $product_id, '_weight', true ), 'kg' );
+		$waps_prod_weight_kg = wc_get_weight( get_post_meta( $product_id, '_weight', true ), 'kg' );
 
-		if ( empty( $waps_product_weight_in_kg ) || ! $waps_product_weight_in_kg > 0 ) {
+		if ( empty( $waps_prod_weight_kg ) || ! $waps_prod_weight_kg > 0 ) {
 			$product = wc_get_product( $product_id );
 			if ( $product->is_type( 'variation' ) ) {
 				if ( $product->get_weight() > 0 ) {
-					$waps_product_weight_in_kg = wc_get_weight( $product->get_weight(), 'kg' );
+					$waps_prod_weight_kg = wc_get_weight( $product->get_weight(), 'kg' );
 				} else {
 					echo '<p>Customs duties calc skipped, missing variation product weight</p>';
 
@@ -287,12 +289,12 @@ class Woo_Advanced_Price_Setter_Admin {
 			}
 		}
 
-		$price = $price + ( $this->options['shipping_cost'] * $waps_product_weight_in_kg );
+		$price = $price + ( $this->options['shipping_cost'] * $waps_prod_weight_kg );
 
 		$this->waps_log_dryrun( $dryrun,
 			'<p>Current shipping costs: ' . wc_price( $this->options['shipping_cost'] ) . ' per kg'
 		);
-		$this->waps_log_dryrun( $dryrun, '<br/>Product weight in kg: ' . esc_html( $waps_product_weight_in_kg ) );
+		$this->waps_log_dryrun( $dryrun, '<br/>Product weight in kg: ' . esc_html( $waps_prod_weight_kg ) );
 		$this->waps_log_dryrun( $dryrun, '<br/>Price after shipping costs: ' . esc_html( $price ) . '</p>' );
 
 		return $price;
