@@ -56,3 +56,8 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 = 1.0 =
 First release
+
+== TODO ==
+* List all products that has waps enabled with submit button to change price
+* List all products that has not waps enabled and a submit button to enable waps.
+* Add more info like recomended end price
