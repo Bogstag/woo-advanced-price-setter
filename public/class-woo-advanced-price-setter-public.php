@@ -47,7 +47,7 @@ class Woo_Advanced_Price_Setter_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
@@ -73,7 +73,7 @@ class Woo_Advanced_Price_Setter_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-advanced-price-setter-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/woo-advanced-price-setter-public.css', array(), $this->version, 'all');
 
 	}
 
@@ -96,7 +96,7 @@ class Woo_Advanced_Price_Setter_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-advanced-price-setter-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/woo-advanced-price-setter-public.js', array('jquery'), $this->version, false);
 
 	}
 

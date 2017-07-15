@@ -51,7 +51,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @param      string $version     The version of this plugin.
 	 * @param      array  $options     Options of this plugin.
 	 */
-	public function __construct( $plugin_name, $version, $options ) {
+	public function __construct($plugin_name, $version, $options) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
@@ -87,7 +87,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-advanced-price-setter-admin.css',
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/woo-advanced-price-setter-admin.css',
 			[], $this->version, 'all'
 		);
 
@@ -120,8 +120,8 @@ class Woo_Advanced_Price_Setter_Admin {
 	 *
 	 * @return string
 	 */
-	public function format_number( $number ) {
-		return wc_format_decimal( $number, false, false );
+	public function format_number($number) {
+		return wc_format_decimal($number, false, false);
 	}
 
 	/**
@@ -131,45 +131,45 @@ class Woo_Advanced_Price_Setter_Admin {
 	 *
 	 * @return mixed
 	 */
-	public function validate_options( $options ) {
-		$options['dollar_rate'] = $this->format_number( $options['dollar_rate'] );
+	public function validate_options($options) {
+		$options['dollar_rate'] = $this->format_number($options['dollar_rate']);
 
 		return $options;
 	}
 
 	public function waps_add_in_price_and_button() {
-		wp_register_script( 'waps_dryrun', plugin_dir_url( __FILE__ ) . 'js/woo-advanced-price-setter-admin.js',
-			[ 'jquery' ], $this->version, true
+		wp_register_script('waps_dryrun', plugin_dir_url(__FILE__) . 'js/woo-advanced-price-setter-admin.js',
+			['jquery'], $this->version, true
 		);
-		wp_enqueue_script( 'waps_dryrun' );
+		wp_enqueue_script('waps_dryrun');
 		global $product;
-		if ( ! is_object( $product ) ) {
-			$product = wc_get_product( get_the_ID() );
+		if ( ! is_object($product)) {
+			$product = wc_get_product(get_the_ID());
 		}
-		wp_localize_script( 'waps_dryrun', 'waps_dryrun_vars', [
+		wp_localize_script('waps_dryrun', 'waps_dryrun_vars', [
 				'postid' => $product->get_id(),
 			]
 		);
-		woocommerce_wp_text_input( [
+		woocommerce_wp_text_input([
 				'id'        => '_in_price_dollar',
-				'label'     => esc_html__( 'WAPS product prince', 'woo-advanced-price-setter' ) . ' ($)',
+				'label'     => esc_html__('WAPS product prince', 'woo-advanced-price-setter') . ' ($)',
 				'data_type' => 'price',
 			]
 		);
-		submit_button( esc_html__( 'WAPS Dry Run', 'woo-advanced-price-setter' ), 'button small', 'waps_dryrun', false
+		submit_button(esc_html__('WAPS Dry Run', 'woo-advanced-price-setter'), 'button small', 'waps_dryrun', false
 		);
 		echo '<div class="waps_dryrun_response">&nbsp;</div>';
 	}
 
-	public function waps_variable_add_in_price_and_button( $loop, $variation_data, $variation ) {
-		if ( isset( $variation_data['_in_price_dollar'][0] ) ) {
-			$value = esc_attr( $variation_data['_in_price_dollar'][0] );
+	public function waps_variable_add_in_price_and_button($loop, $variation_data, $variation) {
+		if (isset($variation_data['_in_price_dollar'][0])) {
+			$value = esc_attr($variation_data['_in_price_dollar'][0]);
 		} else {
 			$value = null;
 		}
-		woocommerce_wp_text_input( [
+		woocommerce_wp_text_input([
 				'id'        => '_in_price_dollar_' . $variation->ID,
-				'label'     => esc_html__( 'WAPS product prince', 'woo-advanced-price-setter' ) . ' ($)',
+				'label'     => esc_html__('WAPS product prince', 'woo-advanced-price-setter') . ' ($)',
 				'data_type' => 'price',
 				'value'     => $value,
 			]
@@ -181,8 +181,8 @@ class Woo_Advanced_Price_Setter_Admin {
 
 	public function waps_dryrun() {
 		$price      = (float) $_POST['current_in_price_dollar'];
-		$product_id = intval( $_POST['post_id'] );
-		$this->waps_get_new_product_price( $price, $product_id, $dryrun = true );
+		$product_id = intval($_POST['post_id']);
+		$this->waps_get_new_product_price($price, $product_id, $dryrun = true);
 		wp_die();
 	}
 
@@ -214,6 +214,9 @@ class Woo_Advanced_Price_Setter_Admin {
 		return $price;
 	}
 
+	/**
+	 * @param boolean $dryrun
+	 */
 	private function calc_waps_dollar_rate( $price, $dryrun ) {
 		if ( empty( $this->options['dollar_rate'] ) || ! $this->options['dollar_rate'] > 0 ) {
 			if ( $dryrun ) {
@@ -235,6 +238,9 @@ class Woo_Advanced_Price_Setter_Admin {
 		return $price;
 	}
 
+	/**
+	 * @param boolean $dryrun
+	 */
 	private function calc_waps_customs_duties( $price, $dryrun ) {
 		if ( empty( $this->options['customs_duties'] ) || ! $this->options['customs_duties'] > 0 ) {
 			if ( $dryrun ) {
@@ -253,6 +259,10 @@ class Woo_Advanced_Price_Setter_Admin {
 		return $price;
 	}
 
+	/**
+	 * @param integer $product_id
+	 * @param boolean $dryrun
+	 */
 	private function calc_waps_shipping_cost( $price, $product_id, $dryrun ) {
 		if ( empty( $this->options['shipping_cost'] ) || ! $this->options['shipping_cost'] > 0 ) {
 			if ( $dryrun ) {
@@ -293,6 +303,9 @@ class Woo_Advanced_Price_Setter_Admin {
 		return $price;
 	}
 
+	/**
+	 * @param boolean $dryrun
+	 */
 	private function calc_waps_all_segments( $price, $dryrun ) {
 
 		if ( $price >= $this->options['whole_mark_1_from'] && $price < $this->options['whole_mark_1_to'] ) {
@@ -315,6 +328,9 @@ class Woo_Advanced_Price_Setter_Admin {
 		return $price;
 	}
 
+	/**
+	 * @param boolean $dryrun
+	 */
 	private function calc_waps_num_of_dec( $price, $dryrun ) {
 		$price = $this->waps_round( $price );
 		if ( $dryrun ) {
@@ -331,6 +347,11 @@ class Woo_Advanced_Price_Setter_Admin {
 		return round( $value, $waps_num_of_dec );
 	}
 
+	/**
+	 * @param double $price
+	 * @param integer $product_id
+	 * @param boolean $dryrun
+	 */
 	private function calc_waps_new_sales_price( $price, $product_id, $dryrun ) {
 		$product    = wc_get_product( $product_id );
 		$sale_price = $product->get_sale_price();
@@ -373,24 +394,24 @@ class Woo_Advanced_Price_Setter_Admin {
 	 *
 	 * @param string $product_id Product Id.
 	 */
-	private function waps_update_price( $product_id, $price ) {
-		update_post_meta( $product_id, '_regular_price', $price );
-		if ( $this->new_sales_price ) {
-			update_post_meta( $product_id, '_sale_price', $this->new_sales_price );
-			update_post_meta( $product_id, '_price', $this->new_sales_price );
+	private function waps_update_price($product_id, $price) {
+		update_post_meta($product_id, '_regular_price', $price);
+		if ($this->new_sales_price) {
+			update_post_meta($product_id, '_sale_price', $this->new_sales_price);
+			update_post_meta($product_id, '_price', $this->new_sales_price);
 		} else {
-			update_post_meta( $product_id, '_price', $price );
+			update_post_meta($product_id, '_price', $price);
 		}
-		delete_transient( 'wc_var_prices_' . $product_id );
+		delete_transient('wc_var_prices_' . $product_id);
 	}
 
 	/**
 	 * @param $product_id
 	 * @param $waps_price
 	 */
-	private function waps_update_product( $product_id, $waps_price ) {
-		update_post_meta( $product_id, '_in_price_dollar', $waps_price );
-		$price = $this->waps_get_new_product_price( $waps_price, $product_id );
-		$this->waps_update_price( $product_id, $price );
+	private function waps_update_product($product_id, $waps_price) {
+		update_post_meta($product_id, '_in_price_dollar', $waps_price);
+		$price = $this->waps_get_new_product_price($waps_price, $product_id);
+		$this->waps_update_price($product_id, $price);
 	}
 }
