@@ -26,7 +26,7 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined('WPINC')) {
+if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
@@ -35,7 +35,7 @@ if ( ! defined('WPINC')) {
  * This action is documented in includes/class-woo-advanced-price-setter-activator.php
  */
 function activate_woo_advanced_price_setter() {
-	require_once plugin_dir_path(__FILE__) . 'includes/class-woo-advanced-price-setter-activator.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-advanced-price-setter-activator.php';
 	Woo_Advanced_Price_Setter_Activator::activate();
 }
 
@@ -44,18 +44,18 @@ function activate_woo_advanced_price_setter() {
  * This action is documented in includes/class-woo-advanced-price-setter-deactivator.php
  */
 function deactivate_woo_advanced_price_setter() {
-	require_once plugin_dir_path(__FILE__) . 'includes/class-woo-advanced-price-setter-deactivator.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-advanced-price-setter-deactivator.php';
 	Woo_Advanced_Price_Setter_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, 'activate_woo_advanced_price_setter');
-register_deactivation_hook(__FILE__, 'deactivate_woo_advanced_price_setter');
+register_activation_hook( __FILE__, 'activate_woo_advanced_price_setter' );
+register_deactivation_hook( __FILE__, 'deactivate_woo_advanced_price_setter' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path(__FILE__) . 'includes/class-woo-advanced-price-setter.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-woo-advanced-price-setter.php';
 
 /**
  * Begins execution of the plugin.
