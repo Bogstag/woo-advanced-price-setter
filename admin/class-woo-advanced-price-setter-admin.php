@@ -8,16 +8,6 @@
  *
  * @package    Woo_Advanced_Price_Setter
  * @subpackage Woo_Advanced_Price_Setter/admin
- */
-
-/**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @package    Woo_Advanced_Price_Setter
- * @subpackage Woo_Advanced_Price_Setter/admin
  * @author     Krister Bogstag <krister@bogstag.se>
  */
 class Woo_Advanced_Price_Setter_Admin {
@@ -40,6 +30,17 @@ class Woo_Advanced_Price_Setter_Admin {
 	 */
 	private $version;
 
+	/**
+	 * Variable to hold log messages.
+	 * @var null
+	 */
+	private $log = null;
+
+	/**
+	 * @since    1.0.0
+	 * @access   private
+	 * @var float $new_sales_price
+	 */
 	private $new_sales_price;
 
 	/**
@@ -74,23 +75,9 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Woo_Advanced_Price_Setter_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Woo_Advanced_Price_Setter_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-advanced-price-setter-admin.css',
 			[], $this->version, 'all'
 		);
-
 	}
 
 	/**
@@ -100,17 +87,6 @@ class Woo_Advanced_Price_Setter_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Woo_Advanced_Price_Setter_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Woo_Advanced_Price_Setter_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
 	}
 
 	/**
@@ -137,6 +113,9 @@ class Woo_Advanced_Price_Setter_Admin {
 		return $options;
 	}
 
+	/**
+	 * Add the dryrun button to simple product page.
+	 */
 	public function waps_add_in_price_and_button() {
 		wp_register_script( 'waps_dryrun', plugin_dir_url( __FILE__ ) . 'js/woo-advanced-price-setter-admin.js',
 			[ 'jquery' ], $this->version, true
@@ -161,6 +140,13 @@ class Woo_Advanced_Price_Setter_Admin {
 		echo '<div class="waps_dryrun_response">&nbsp;</div>';
 	}
 
+	/**
+	 * Adds WAPS to variation product page.
+	 *
+	 * @param $loop
+	 * @param $variation_data
+	 * @param $variation
+	 */
 	public function waps_variable_add_in_price_and_button( $loop, $variation_data, $variation ) {
 		if ( isset( $variation_data['_in_price_dollar'][0] ) ) {
 			$value = esc_attr( $variation_data['_in_price_dollar'][0] );
@@ -174,116 +160,124 @@ class Woo_Advanced_Price_Setter_Admin {
 				'value'     => $value,
 			]
 		);
-		//submit_button( esc_html__( 'WAPS Dry Run', 'woo-advanced-price-setter' ), 'button small', 'waps_dryrun', false
-		//);
-		//echo '<div class="waps_dryrun_response">&nbsp;</div>';
 	}
 
+	/**
+	 * Ajax calls this function to display drurun results.
+	 */
 	public function waps_dryrun() {
 		$price      = (float) $_POST['current_in_price_dollar'];
 		$product_id = intval( $_POST['post_id'] );
-		$this->waps_get_new_product_price( $price, $product_id, $dryrun = true );
+		$this->waps_get_new_product_price( $price, $product_id, $dryRun = true );
 		wp_die();
 	}
 
 	/**
-	 * Calcs the nre price.
+	 * Calcs the new price.
 	 *
 	 * @param float $price      WAPS Product price.
 	 * @param int   $product_id Woo Product Id.
-	 * @param bool  $dryrun     If true then output more info, for debug and test.
+	 * @param bool  $dryRun     If true then output more info, for debug and test.
 	 *
 	 * @return mixed|string
 	 */
-	public function waps_get_new_product_price( $price, $product_id, $dryrun = false ) {
+	public function waps_get_new_product_price( $price, $product_id, $dryRun = false ) {
 		if ( ! $price > 0 ) {
-			$this->waps_log_dryrun( $dryrun, 'Price is zero or less, cant do calc' );
+			$this->waps_log( 1, 'Price is zero or less, cant do calc' );
 
 			return false;
 		}
 		$price = wc_format_decimal( $price, false, false );
-		$price = $this->calc_waps_dollar_rate( $price, $dryrun );
-		$price = $this->calc_waps_customs_duties( $price, $dryrun );
-		$price = $this->calc_waps_shipping_cost( $price, $product_id, $dryrun );
-		$price = $this->calc_waps_all_segments( $price, $dryrun );
-		$price = $this->calc_waps_num_of_dec( $price, $dryrun );
-		$this->calc_waps_new_sales_price( $price, $product_id, $dryrun );
+		$price = $this->calc_waps_dollar_rate( $price, $dryRun );
+		$price = $this->calc_waps_customs_duties( $price, $dryRun );
+		$price = $this->calc_waps_shipping_cost( $price, $product_id, $dryRun );
+		$price = $this->calc_waps_all_segments( $price, $dryRun );
+		$price = $this->calc_waps_num_of_dec( $price, $dryRun );
+		$this->calc_waps_new_sales_price( $price, $product_id, $dryRun );
 
 		return $price;
 	}
 
-	public function waps_log_dryrun( $dryrun = false, $string ) {
-		if ( $dryrun ) {
-			echo $string;
+	/**
+	 * Function to echo out the changes to price.
+	 *
+	 * @param bool   $dryRun
+	 * @param string $string
+	 */
+	public function waps_log( $dryRun = false, $string ) {
+		if ( $dryRun ) {
+			$this->log = $this->log . $string . '<br/>';
 		}
 	}
 
 	/**
-	 * @param boolean $dryrun
+	 * @param float   $price
+	 * @param boolean $dryRun
+	 *
+	 * @return float $price
 	 */
-	private function calc_waps_dollar_rate( $price, $dryrun ) {
+	private function calc_waps_dollar_rate( $price, $dryRun ) {
 		if ( empty( $this->options['dollar_rate'] ) || ! $this->options['dollar_rate'] > 0 ) {
-			$this->waps_log_dryrun( $dryrun, '<p>Dollar rate calc skipped</p>' );
+			$this->waps_log( 1, 'Dollar rate calc skipped, missing setting or less then zero.' );
 
 			return $price;
 		}
 
 		$price = $price * $this->options['dollar_rate'];
 
-		$this->waps_log_dryrun( $dryrun, '<p>Current dollar rate: ' . wc_price( $this->options['dollar_rate']
+		$this->waps_log( $dryRun, 'Current dollar rate: ' . wc_price( $this->options['dollar_rate']
 			) . ' per $'
 		);
-		$this->waps_log_dryrun( $dryrun, '<br/>New price after dollar rate calc: ' . wc_price( $price
-			) . '</p>'
+		$this->waps_log( $dryRun, 'New price after dollar rate calc: ' . wc_price( $price
+			)
 		);
 
 		return $price;
 	}
 
 	/**
-	 * @param boolean $dryrun
+	 * @param float   $price
+	 * @param boolean $dryRun
+	 *
+	 * @return float $price
 	 */
-	private function calc_waps_customs_duties( $price, $dryrun ) {
+	private function calc_waps_customs_duties( $price, $dryRun ) {
 		if ( empty( $this->options['customs_duties'] ) || ! $this->options['customs_duties'] > 0 ) {
-			$this->waps_log_dryrun( $dryrun, '<p>Customs duties calc skipped</p>' );
+			$this->waps_log( 1, 'Customs duties calc skipped, missing setting or less then zero.' );
 
 			return $price;
 		}
 		$price = $price * $this->options['customs_duties'];
 
-		$this->waps_log_dryrun( $dryrun, '<p>Current customs duties: ' . esc_html( $this->options['customs_duties'] ) );
-		$this->waps_log_dryrun( $dryrun, '<br/>Price after customs duties: ' . esc_html( $price ) . '</p>' );
+		$this->waps_log( $dryRun, 'Current customs duties: ' . esc_html( $this->options['customs_duties'] ) );
+		$this->waps_log( $dryRun, 'Price after customs duties: ' . esc_html( $price ) );
 
 		return $price;
 	}
 
 	/**
+	 * @param float   $price
 	 * @param integer $product_id
-	 * @param boolean $dryrun
+	 * @param boolean $dryRun
 	 *
-	 * @return double $price
+	 * @return float $price
 	 */
-	private function calc_waps_shipping_cost( $price, $product_id, $dryrun ) {
+	private function calc_waps_shipping_cost( $price, $product_id, $dryRun ) {
 		if ( empty( $this->options['shipping_cost'] ) || ! $this->options['shipping_cost'] > 0 ) {
-			$this->waps_log_dryrun( $dryrun, '<p>Customs duties calc skipped, missing shipping cost</p>' );
+			$this->waps_log( 1, 'Customs duties calc skipped, missing shipping cost' );
 
 			return $price;
 		}
-
-		$waps_prod_weight_kg = wc_get_weight( get_post_meta( $product_id, '_weight', true ), 'kg' );
+		$product             = wc_get_product( $product_id );
+		$waps_prod_weight_kg = wc_get_weight( $product->get_weight(), 'kg' );
 
 		if ( empty( $waps_prod_weight_kg ) || ! $waps_prod_weight_kg > 0 ) {
-			$product = wc_get_product( $product_id );
 			if ( $product->is_type( 'variation' ) ) {
-				if ( $product->get_weight() > 0 ) {
-					$waps_prod_weight_kg = wc_get_weight( $product->get_weight(), 'kg' );
-				} else {
-					echo '<p>Customs duties calc skipped, missing variation product weight</p>';
+				$this->waps_log( 1, 'Customs duties calc skipped, missing variation product weight' );
 
-					return $price;
-				}
+				return $price;
 			} else {
-				echo '<p>Customs duties calc skipped, missing product weight</p>';
+				$this->waps_log( 1, 'Customs duties calc skipped, missing product weight' );
 
 				return $price;
 			}
@@ -291,19 +285,21 @@ class Woo_Advanced_Price_Setter_Admin {
 
 		$price = $price + ( $this->options['shipping_cost'] * $waps_prod_weight_kg );
 
-		$this->waps_log_dryrun( $dryrun,
-			'<p>Current shipping costs: ' . wc_price( $this->options['shipping_cost'] ) . ' per kg'
+		$this->waps_log( $dryRun, 'Current shipping costs: ' . wc_price( $this->options['shipping_cost'] ) . ' per kg'
 		);
-		$this->waps_log_dryrun( $dryrun, '<br/>Product weight in kg: ' . esc_html( $waps_prod_weight_kg ) );
-		$this->waps_log_dryrun( $dryrun, '<br/>Price after shipping costs: ' . esc_html( $price ) . '</p>' );
+		$this->waps_log( $dryRun, 'Product weight in kg: ' . esc_html( $waps_prod_weight_kg ) );
+		$this->waps_log( $dryRun, 'Price after shipping costs: ' . esc_html( $price ) );
 
 		return $price;
 	}
 
 	/**
-	 * @param boolean $dryrun
+	 * @param float   $price
+	 * @param boolean $dryRun
+	 *
+	 * @return float $price
 	 */
-	private function calc_waps_all_segments( $price, $dryrun ) {
+	private function calc_waps_all_segments( $price, $dryRun ) {
 
 		if ( $price >= $this->options['whole_mark_1_from'] && $price < $this->options['whole_mark_1_to'] ) {
 			$mark = $this->options['whole_mark_1_mark'];
@@ -317,22 +313,30 @@ class Woo_Advanced_Price_Setter_Admin {
 			return $price;
 		}
 		$price = $price * $mark;
-		$this->waps_log_dryrun( $dryrun, '<p>Wholesale mark: ' . esc_html( $mark ) );
-		$this->waps_log_dryrun( $dryrun, '<br/>Price after wholesale mark: ' . esc_html( $price ) . '</p>' );
+		$this->waps_log( $dryRun, 'Wholesale mark: ' . esc_html( $mark ) );
+		$this->waps_log( $dryRun, 'Price after wholesale mark: ' . esc_html( $price ) );
 
 		return $price;
 	}
 
 	/**
-	 * @param boolean $dryrun
+	 * @param float   $price
+	 * @param boolean $dryRun
+	 *
+	 * @return float $price
 	 */
-	private function calc_waps_num_of_dec( $price, $dryrun ) {
+	private function calc_waps_num_of_dec( $price, $dryRun ) {
 		$price = $this->waps_round( $price );
-		$this->waps_log_dryrun( $dryrun, '<p>Price after rounded: ' . esc_html( $price ) . '</p>' );
+		$this->waps_log( $dryRun, 'Price after rounded: ' . esc_html( $price ) );
 
 		return $price;
 	}
 
+	/**
+	 * @param $value
+	 *
+	 * @return float
+	 */
 	private function waps_round( $value ) {
 		$waps_num_of_dec = get_option( 'aps_num_of_dec', absint( get_option( 'woocommerce_price_num_decimals', 2 ) )
 		);
@@ -341,25 +345,28 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
-	 * @param double  $price
+	 * @param float   $price
 	 * @param integer $product_id
-	 * @param boolean $dryrun
+	 * @param boolean $dryRun
 	 */
-	private function calc_waps_new_sales_price( $price, $product_id, $dryrun ) {
+	private function calc_waps_new_sales_price( $price, $product_id, $dryRun ) {
 		$product    = wc_get_product( $product_id );
 		$sale_price = $product->get_sale_price();
 		$reg_price  = $product->get_regular_price();
 		unset( $this->new_sales_price );
 
 		if ( empty( $sale_price ) || ! $sale_price > 0 ) {
-			$this->waps_log_dryrun( $dryrun, '<p>New sales price calc skipped</p>' );
+			$this->waps_log( 1, 'New sales price calc skipped, missing price or less then zero.' );
 		}
 		$precent_sale          = $sale_price / $reg_price;
 		$this->new_sales_price = $this->waps_round( $price * $precent_sale );
-		$this->waps_log_dryrun( $dryrun, '<p>Current sale %: ' . esc_html( $precent_sale ) );
-		$this->waps_log_dryrun( $dryrun, '<br/>New sales price: ' . esc_html( $this->new_sales_price ) . '</p>' );
+		$this->waps_log( $dryRun, 'Current sale %: ' . esc_html( $precent_sale ) );
+		$this->waps_log( $dryRun, 'New sales price: ' . esc_html( $this->new_sales_price ) );
 	}
 
+	/**
+	 * @param $product_id
+	 */
 	public function waps_woocommerce_save_new_waps_price( $product_id ) {
 		$product = wc_get_product( $product_id );
 		if ( $product->is_type( 'variation' ) ) {
@@ -379,6 +386,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * Actually changes the price.
 	 *
 	 * @param string $product_id Product Id.
+	 * @param float  $price
 	 */
 	private function waps_update_price( $product_id, $price ) {
 		update_post_meta( $product_id, '_regular_price', $price );
@@ -392,13 +400,15 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
-	 * @param $product_id
-	 * @param $waps_price
+	 * @param integer $product_id
+	 * @param float   $waps_price
 	 */
 	public function waps_update_product( $product_id, $waps_price ) {
 		update_post_meta( $product_id, '_in_price_dollar', $waps_price );
 		$price = $this->waps_get_new_product_price( $waps_price, $product_id );
 		$this->waps_update_price( $product_id, $price );
 		WC_Product_Variable::sync( $product_id, 0 );
+		echo $this->log;
+		$this->log = null;
 	}
 }
