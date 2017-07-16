@@ -24,6 +24,9 @@
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=woo-advanced-price-setter&tab=general_options"
 		   class="nav-tab <?php echo $active_tab == 'general_options' ? 'nav-tab-active' : ''; ?>">General Options</a>
+		<a href="?page=woo-advanced-price-setter&tab=list_products_waps"
+		   class="nav-tab <?php echo $active_tab == 'list_products_waps' ? 'nav-tab-active' : ''; ?>">List products with
+			waps</a>
 		<a href="?page=woo-advanced-price-setter&tab=recalc_options"
 		   class="nav-tab <?php echo $active_tab == 'recalc_options' ? 'nav-tab-active' : ''; ?>">Recalculate</a>
 	</h2>
@@ -32,10 +35,31 @@
 			settings_fields( $this->plugin_name . '-options' );
 			do_settings_sections( $this->plugin_name );
 			submit_button( 'Save Settings' );
+		} elseif ( $active_tab == 'list_products_waps' ) {
+			$this->customers_obj = new Woo_Advanced_Price_Setter_Product_List();
+			?>
+			<div class="wrap">
+				<h2>Products with WAPS</h2>
+
+				<form id="waps-filter" method="post">
+					<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+					<?php
+					$this->customers_obj->prepare_items();
+					$this->customers_obj->display();
+					?>
+				</form>
+
+				<br class="clear">
+
+			</div>
+			<?php
 		} else {
-			echo '<h2>Recalculate all products</h2><p>You need to recalculate when changing settings on the general options page</p>';
+			?>
+			<h2>Recalculate all products</h2>
+			<p>You need to recalculate when changing settings on the general options page</p>
+			<?php
 			$this->waps_options_recalc_button();
 		}
-
-		?></form>
+		?>
+	</form>
 </div>
