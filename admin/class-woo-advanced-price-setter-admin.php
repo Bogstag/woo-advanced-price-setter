@@ -333,7 +333,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
-	 * @param $value
+	 * @param double $value
 	 *
 	 * @return float
 	 */
