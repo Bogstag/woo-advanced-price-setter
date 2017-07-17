@@ -42,7 +42,7 @@
 				<h2>Products with WAPS</h2>
 
 				<form id="waps-filter" method="post">
-					<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+					<input type="hidden" name="page" value="<?php echo urlencode( $_REQUEST['page'] ) ?>"/>
 					<?php
 					$this->customers_obj->prepare_items();
 					$this->customers_obj->display();
