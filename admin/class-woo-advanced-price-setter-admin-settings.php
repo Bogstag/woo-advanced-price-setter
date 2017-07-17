@@ -51,6 +51,7 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	 */
 	public function set_options() {
 		$this->options                 = get_option( $this->plugin_name . '-options' );
+		$defaults                      = [];
 		$defaults['dollar_rate']       = 1;
 		$defaults['customs_duties']    = 1;
 		$defaults['shipping_cost']     = 70;
@@ -265,6 +266,7 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	 * @param    array $args The arguments for the field.
 	 */
 	public function field_text( $args ) {
+		$defaults                = [];
 		$defaults['class']       = 'text';
 		$defaults['description'] = '';
 		$defaults['label']       = '';
@@ -313,7 +315,7 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	}
 
 	public function waps_recalc() {
-		global $wpdb;
+
 		$ids = $wpdb->get_results( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = '_in_price_dollar' AND meta_value > 0"
 		);
 		echo '<p>Found ' . count( $ids ) . ' products to update.</p>';

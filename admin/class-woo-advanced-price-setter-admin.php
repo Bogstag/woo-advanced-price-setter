@@ -34,7 +34,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * Variable to hold log messages.
 	 * @var null
 	 */
-	private $log = null;
+	private $log;
 
 	/**
 	 * @since    1.0.0
@@ -105,7 +105,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 *
 	 * @param array $options Get options and validate them.
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function validate_options( $options ) {
 		$options['dollar_rate'] = $this->format_number( $options['dollar_rate'] );
@@ -179,11 +179,11 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @param int   $product_id Woo Product Id.
 	 * @param bool  $dryRun     If true then output more info, for debug and test.
 	 *
-	 * @return mixed|string
+	 * @return false|double
 	 */
 	public function waps_get_new_product_price( $price, $product_id, $dryRun = false ) {
 		if ( ! $price > 0 ) {
-			$this->waps_log( 1, 'Price is zero or less, cant do calc' );
+			$this->waps_log( true, 'Price is zero or less, cant do calc' );
 
 			return false;
 		}
@@ -218,7 +218,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 */
 	private function calc_waps_dollar_rate( $price, $dryRun ) {
 		if ( empty( $this->options['dollar_rate'] ) || ! $this->options['dollar_rate'] > 0 ) {
-			$this->waps_log( 1, 'Dollar rate calc skipped, missing setting or less then zero.' );
+			$this->waps_log( true, 'Dollar rate calc skipped, missing setting or less then zero.' );
 
 			return $price;
 		}
@@ -243,7 +243,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 */
 	private function calc_waps_customs_duties( $price, $dryRun ) {
 		if ( empty( $this->options['customs_duties'] ) || ! $this->options['customs_duties'] > 0 ) {
-			$this->waps_log( 1, 'Customs duties calc skipped, missing setting or less then zero.' );
+			$this->waps_log( true, 'Customs duties calc skipped, missing setting or less then zero.' );
 
 			return $price;
 		}
@@ -264,7 +264,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 */
 	private function calc_waps_shipping_cost( $price, $product_id, $dryRun ) {
 		if ( empty( $this->options['shipping_cost'] ) || ! $this->options['shipping_cost'] > 0 ) {
-			$this->waps_log( 1, 'Customs duties calc skipped, missing shipping cost' );
+			$this->waps_log( true, 'Customs duties calc skipped, missing shipping cost' );
 
 			return $price;
 		}
@@ -273,11 +273,11 @@ class Woo_Advanced_Price_Setter_Admin {
 
 		if ( empty( $waps_prod_weight_kg ) || ! $waps_prod_weight_kg > 0 ) {
 			if ( $product->is_type( 'variation' ) ) {
-				$this->waps_log( 1, 'Customs duties calc skipped, missing variation product weight' );
+				$this->waps_log( true, 'Customs duties calc skipped, missing variation product weight' );
 
 				return $price;
 			} else {
-				$this->waps_log( 1, 'Customs duties calc skipped, missing product weight' );
+				$this->waps_log( true, 'Customs duties calc skipped, missing product weight' );
 
 				return $price;
 			}
@@ -356,7 +356,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		unset( $this->new_sales_price );
 
 		if ( empty( $sale_price ) || ! $sale_price > 0 ) {
-			$this->waps_log( 1, 'New sales price calc skipped, missing price or less then zero.' );
+			$this->waps_log( true, 'New sales price calc skipped, missing price or less then zero.' );
 		}
 		$precent_sale          = $sale_price / $reg_price;
 		$this->new_sales_price = $this->waps_round( $price * $precent_sale );
@@ -406,9 +406,13 @@ class Woo_Advanced_Price_Setter_Admin {
 	public function waps_update_product( $product_id, $waps_price ) {
 		update_post_meta( $product_id, '_in_price_dollar', $waps_price );
 		$price = $this->waps_get_new_product_price( $waps_price, $product_id );
-		$this->waps_update_price( $product_id, $price );
-		WC_Product_Variable::sync( $product_id, 0 );
-		echo $this->log;
-		$this->log = null;
+		if ( $price ) {
+			$this->waps_update_price( $product_id, $price );
+			WC_Product_Variable::sync( $product_id, 0 );
+			echo $this->log;
+			$this->log = null;
+		} else {
+			print_r( new WP_Error( 'price', 'No WAPS price found' ) );
+		}
 	}
 }
