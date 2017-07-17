@@ -17,6 +17,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class Woo_Advanced_Price_Setter_Product_List extends WP_List_Table {
 
+	public $customers_obj;
+
 	function __construct() {
 		global $status, $page;
 
@@ -50,7 +52,7 @@ class Woo_Advanced_Price_Setter_Product_List extends WP_List_Table {
 
 	function column__in_price_dollar( $item ) {
 		woocommerce_wp_text_input( [
-				'id'        => '_in_price_dollar'. $item['ID'],
+				'id'        => '_in_price_dollar' . $item['ID'],
 				'data_type' => 'price',
 				'value'     => $item['_in_price_dollar']
 			]
@@ -95,24 +97,16 @@ class Woo_Advanced_Price_Setter_Product_List extends WP_List_Table {
 		 */
 		$per_page = 50;
 
-		$columns  = $this->get_columns();
-		$hidden   = [];
-		$sortable = $this->get_sortable_columns();
-
+		$columns               = $this->get_columns();
+		$hidden                = [];
+		$sortable              = $this->get_sortable_columns();
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
-
 		$this->process_bulk_action();
-
-		$data = $this->get_products_waps();
-
+		$data         = $this->get_products_waps();
 		$current_page = $this->get_pagenum();
-
-		$total_items = count( $data );
-
-		$data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
-
-		$this->items = $data;
-
+		$total_items  = count( $data );
+		$data         = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
+		$this->items  = $data;
 		$this->set_pagination_args( [
 				'total_items' => $total_items,                  //WE have to calculate the total number of items
 				'per_page'    => $per_page,                     //WE have to determine how many items to show on a page

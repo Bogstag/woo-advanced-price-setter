@@ -315,7 +315,7 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	}
 
 	public function waps_recalc() {
-
+		global $wpdb;
 		$ids = $wpdb->get_results( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = '_in_price_dollar' AND meta_value > 0"
 		);
 		echo '<p>Found ' . count( $ids ) . ' products to update.</p>';

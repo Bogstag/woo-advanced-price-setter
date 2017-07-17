@@ -36,7 +36,7 @@
 			do_settings_sections( $this->plugin_name );
 			submit_button( 'Save Settings' );
 		} elseif ( $active_tab == 'list_products_waps' ) {
-			$this->customers_obj = new Woo_Advanced_Price_Setter_Product_List();
+			$this->products_with_waps = new Woo_Advanced_Price_Setter_Product_List();
 			?>
 			<div class="wrap">
 				<h2>Products with WAPS</h2>
@@ -44,8 +44,8 @@
 				<form id="waps-filter" method="get">
 					<input type="hidden" name="page" value="<?php echo urlencode( $_REQUEST['page'] ) ?>"/>
 					<?php
-					$this->customers_obj->prepare_items();
-					$this->customers_obj->display();
+					$this->products_with_waps->prepare_items();
+					$this->products_with_waps->display();
 					?>
 				</form>
 
