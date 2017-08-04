@@ -30,36 +30,42 @@
 		<a href="?page=woo-advanced-price-setter&tab=recalc_options"
 		   class="nav-tab <?php echo $active_tab == 'recalc_options' ? 'nav-tab-active' : ''; ?>">Recalculate</a>
 	</h2>
-	<form method="post" action="options.php"><?php
-		if ( $active_tab == 'general_options' ) {
-			settings_fields( $this->plugin_name . '-options' );
-			do_settings_sections( $this->plugin_name );
-			submit_button( 'Save Settings' );
-		} elseif ( $active_tab == 'list_products_waps' ) {
-			$this->products_with_waps = new Woo_Advanced_Price_Setter_Product_List();
-			?>
-			<div class="wrap">
-				<h2>Products with WAPS</h2>
+	<?php
+	if ( $active_tab == 'general_options' ) {
+		echo '<form method="post" action="options.php">';
+		settings_fields( $this->plugin_name . '-options' );
+		do_settings_sections( $this->plugin_name );
+		submit_button( 'Save Settings' );
+		echo '</form>';
+	} else if ( $active_tab == 'list_products_waps' ) {
+		$this->products_with_waps = new Woo_Advanced_Price_Setter_Product_List();
 
-				<form id="waps-filter" method="get">
-					<input type="hidden" name="page" value="<?php echo urlencode( $_REQUEST['page'] ) ?>"/>
-					<?php
-					$this->products_with_waps->prepare_items();
-					$this->products_with_waps->display();
-					?>
-				</form>
-
-				<br class="clear">
-
-			</div>
-			<?php
-		} else {
-			?>
-			<h2>Recalculate all products</h2>
-			<p>You need to recalculate when changing settings on the general options page</p>
-			<?php
-			$this->waps_options_recalc_button();
-		}
 		?>
-	</form>
+		<div class="wrap">
+			<h2>Products with WAPS</h2>
+
+			<form id="waps-filter" method="GET">
+				<input type="hidden" name="page" value="<?php echo urlencode( $_REQUEST['page'] ) ?>"/>
+				<input type="hidden" name="tab" value="list_products_waps"/>
+				<?php
+				$this->products_with_waps->prepare_items( );
+				$this->products_with_waps->search_box( 'search', 'search_id' );
+				$this->products_with_waps->display();
+
+				?>
+			</form>
+
+			<br class="clear">
+
+		</div>
+		<?php
+	} else {
+		?>
+		<h2>Recalculate all products</h2>
+		<p>You need to recalculate when changing settings on the general options page</p>
+		<?php
+		$this->waps_options_recalc_button();
+	}
+	?>
+
 </div>
