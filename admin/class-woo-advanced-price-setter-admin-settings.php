@@ -110,7 +110,12 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 		);
 	}
 
-	function validate_options_input( $input ) {
+	/**
+	 * @param $input
+	 *
+	 * @return mixed
+	 */
+	public function validate_options_input( $input ) {
 		return str_replace(',', '.', $input);
 	}
 

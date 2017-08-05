@@ -26,8 +26,7 @@ class Woo_Advanced_Price_Setter_Product_List extends WP_List_Table {
 	private $product;
 
 	public function __construct() {
-		global $status, $page;
-		//Set parent defaults
+
 		parent::__construct( [
 				'singular' => __( 'Product', 'woo-advanced-price-setter' ),     //singular name of the listed records
 				'plural'   => __( 'Products', 'woo-advanced-price-setter' ),    //plural name of the listed records
