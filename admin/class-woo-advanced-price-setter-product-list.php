@@ -62,11 +62,11 @@ class Woo_Advanced_Price_Setter_Product_List extends WP_List_Table {
 
 	public function get_columns() {
 		$columns = [
-			'post_title'       => 'Name',
-			'_regular_price'   => 'Regular price',
-			'_sale_price'      => 'Sales price',
-			'_price'           => 'Price',
-			'_in_price_dollar' => 'WAPS Price',
+			'post_title'       => __( 'Name', 'woo-advanced-price-setter' ),
+			'_regular_price'   => __( 'Regular price', 'woo-advanced-price-setter' ),
+			'_sale_price'      => __( 'Sales price', 'woo-advanced-price-setter' ),
+			'_price'           => __( 'Price', 'woo-advanced-price-setter' ),
+			'_in_price_dollar' => __( 'WAPS Price', 'woo-advanced-price-setter' ),
 		];
 
 		return $columns;

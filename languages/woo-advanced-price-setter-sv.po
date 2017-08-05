@@ -1,176 +1,147 @@
 # WordPress Blank Pot
 # Copyright (C) 2014 ...
 # This file is distributed under the GNU General Public License v2 or later.
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: "
-"WooCommerce Advanced "
-"Price Setter v1.0.0\n"
-"POT-Creation-Date: "
-"2017-08-05 19:31+0200\n"
+"Project-Id-Version: WooCommerce Advanced Price Setter v1.0.0\n"
+"Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
+"POT-Creation-Date: 2017-08-05 19:40+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Your "
-"Name <you@example.com>\n"
-"Language-Team: Krister "
-"Bogstag <krister@bogstag."
-"se>\n"
-"Report-Msgid-Bugs-To: "
-"Translator Name "
-"<translations@example."
-"com>\n"
+"Last-Translator: \n"
+"Language-Team: Krister Bogstag <krister@bogstag.se>\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/"
-"plain; charset=UTF-8\n"
-"Content-Transfer-"
-"Encoding: 8bit\n"
-"Plural-Forms: "
-"nplurals=2; plural=n != "
-"1;\n"
-"X-Textdomain-Support: "
-"yesX-Generator: Poedit "
-"1.6.4\n"
-"X-Poedit-SourceCharset: "
-"UTF-8\n"
-"X-Poedit-KeywordsList: "
-"__;_e;esc_html_e;"
-"esc_html_x:1,2c;"
-"esc_html__;esc_attr_e;"
-"esc_attr_x:1,2c;"
-"esc_attr__;_ex:1,2c;"
-"_nx:4c,1,2;"
-"_nx_noop:4c,1,2;_x:1,2c;"
-"_n:1,2;_n_noop:1,2;"
-"__ngettext:1,2;"
-"__ngettext_noop:1,2;_c,"
-"_nc:4c,1,2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Textdomain-Support: yesX-Generator: Poedit 1.6.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;"
+"_nx_noop:4c,1,2;_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;"
+"__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"Language: en_US\n"
-"X-Generator: Poedit "
-"2.0.3\n"
-"X-Poedit-"
-"SearchPath-0: .\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:95
 msgid "Settings"
-msgstr ""
+msgstr "Inställningar"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:123
 msgid "Calculating options"
-msgstr ""
+msgstr "Beräknande inställningar"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:129
 msgid "Wholesale mark"
-msgstr ""
+msgstr "Grossist marginal"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:135
 msgid "Retail mark"
-msgstr ""
+msgstr "kundpris marginal"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:141
 msgid "General options"
-msgstr ""
+msgstr "Generella inställningar"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:180
-msgid ""
-"Dollar exchange rate"
-msgstr ""
+msgid "Dollar exchange rate"
+msgstr "Dollar kurs"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:190
 msgid "Customs duties"
-msgstr ""
+msgstr "Tullavgifter"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:200
 msgid "Shipping cost"
-msgstr ""
+msgstr "Fraktkostnad"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:209
 #: admin/class-woo-advanced-price-setter-admin-settings.php:290
 msgid "Segment 1 From"
-msgstr ""
+msgstr "Segment 1 från"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:218
 #: admin/class-woo-advanced-price-setter-admin-settings.php:299
 msgid "Segment 1 To"
-msgstr ""
+msgstr "Segment 1 till"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:227
 #: admin/class-woo-advanced-price-setter-admin-settings.php:308
 msgid "Segment 1 Mark"
-msgstr ""
+msgstr "Segment 1 marginal"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:236
 #: admin/class-woo-advanced-price-setter-admin-settings.php:317
 msgid "Segment 2 From"
-msgstr ""
+msgstr "Segment 2 från"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:245
 #: admin/class-woo-advanced-price-setter-admin-settings.php:326
 msgid "Segment 2 To"
-msgstr ""
+msgstr "Segment 2 till"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:254
 #: admin/class-woo-advanced-price-setter-admin-settings.php:335
 msgid "Segment 2 Mark"
-msgstr ""
+msgstr "Segment 2 marginal"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:263
 #: admin/class-woo-advanced-price-setter-admin-settings.php:344
 msgid "Segment 3 From"
-msgstr ""
+msgstr "Segment 3 från"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:272
 #: admin/class-woo-advanced-price-setter-admin-settings.php:353
 msgid "Segment 3 To"
-msgstr ""
+msgstr "Segment 3 till"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:281
 #: admin/class-woo-advanced-price-setter-admin-settings.php:362
 msgid "Segment 3 Mark"
-msgstr ""
+msgstr "Segment 3 marginal"
 
 #: admin/class-woo-advanced-price-setter-admin-settings.php:419
 msgid "WAPS Recalcualate"
-msgstr ""
+msgstr "WAPS omräkna"
 
 #: admin/class-woo-advanced-price-setter-admin.php:134
 #: admin/class-woo-advanced-price-setter-admin.php:158
-msgid "WAPS product prince"
-msgstr ""
+msgid "WAPS product price"
+msgstr "WAPS produkt pris"
 
 #: admin/class-woo-advanced-price-setter-admin.php:138
 msgid "WAPS Dry Run"
-msgstr ""
+msgstr "WAPS torrkörning"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:32
 msgid "Product"
-msgstr ""
+msgstr "Produkt"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:33
 msgid "Products"
-msgstr ""
+msgstr "Produkter"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:65
 msgid "Name"
-msgstr ""
+msgstr "Namn"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:66
 msgid "Regular price"
-msgstr ""
+msgstr "Vanligt pris"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:67
 msgid "Sales price"
-msgstr ""
+msgstr "Rea pris"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:68
 msgid "Price"
-msgstr ""
+msgstr "Pris"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:69
 msgid "WAPS Price"
-msgstr ""
+msgstr "WAPS Pris"
 
 #: admin/class-woo-advanced-price-setter-product-list.php:185
-msgid ""
-"No products avaliable."
-msgstr ""
+msgid "No products avaliable."
+msgstr "Inga produkter tillgängliga."
