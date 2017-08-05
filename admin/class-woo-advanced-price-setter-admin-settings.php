@@ -64,6 +64,15 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 		$defaults['whole_mark_3_from'] = 2000;
 		$defaults['whole_mark_3_to']   = 99999999999999;
 		$defaults['whole_mark_3_mark'] = 1.18;
+		$defaults['retail_mark_1_from'] = 0;
+		$defaults['retail_mark_1_to']   = 300;
+		$defaults['retail_mark_1_mark'] = 2.1;
+		$defaults['retail_mark_2_from'] = 300;
+		$defaults['retail_mark_2_to']   = 1000;
+		$defaults['retail_mark_2_mark'] = 2;
+		$defaults['retail_mark_3_from'] = 1000;
+		$defaults['retail_mark_3_to']   = 99999999999999;
+		$defaults['retail_mark_3_mark'] = 1.9;
 		$this->options                 = wp_parse_args( $this->options, $defaults );
 	}
 
@@ -97,8 +106,12 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	 */
 	public function register_settings() {
 		register_setting( $this->plugin_name . '-options', $this->plugin_name . '-options',
-			[ $this, 'validate_options' ]
+			[ $this, 'validate_options_input' ]
 		);
+	}
+
+	function validate_options_input( $input ) {
+		return str_replace(',', '.', $input);
 	}
 
 	/**
@@ -115,6 +128,12 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 			apply_filters( $this->plugin_name . 'section_wholesale_mark',
 				esc_html__( 'Wholesale mark', 'woo-advanced-price-setter' )
 			), [ $this, 'section_wholesale_mark' ], $this->plugin_name
+		);
+
+		add_settings_section( $this->plugin_name . '-retail-mark',
+			apply_filters( $this->plugin_name . 'section_retail_mark',
+				esc_html__( 'Retail mark', 'woo-advanced-price-setter' )
+			), [ $this, 'section_retail_mark' ], $this->plugin_name
 		);
 
 		add_settings_section( $this->plugin_name . '-general-options',
@@ -137,6 +156,13 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	 */
 	public function section_wholesale_mark() {
 		echo '<p>This settings adds wholesale mark</p>';
+	}
+
+	/**
+	 *
+	 */
+	public function section_retail_mark() {
+		echo '<p>This settings adds retail mark</p>';
 	}
 
 	/**
@@ -166,6 +192,7 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 				'description' => 'Enter the customs duties. (1 is default, 1.10 is 10% increase)',
 				'id'          => 'customs_duties',
 				'value'       => $this->options['customs_duties'],
+				'class'       => 'wc_input_price',
 			]
 		);
 
@@ -256,6 +283,87 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 				'description' => 'then add this mark on price. (1.18 is 18% increase)',
 				'id'          => 'whole_mark_3_mark',
 				'value'       => $this->options['whole_mark_3_mark'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_1_from', apply_filters( $this->plugin_name . 'label_retail_mark_1_from',
+			esc_html__( 'Segment 1 From', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'If price is more or equal to this',
+				'id'          => 'retail_mark_1_from',
+				'value'       => $this->options['retail_mark_1_from'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_1_to', apply_filters( $this->plugin_name . 'label_retail_mark_1_to',
+			esc_html__( 'Segment 1 To', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'and if price is less than this',
+				'id'          => 'retail_mark_1_to',
+				'value'       => $this->options['retail_mark_1_to'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_1_mark', apply_filters( $this->plugin_name . 'label_retail_mark_1_mark',
+			esc_html__( 'Segment 1 Mark', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'then add this mark on price. (2.1 is 110% increase)',
+				'id'          => 'retail_mark_1_mark',
+				'value'       => $this->options['retail_mark_1_mark'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_2_from', apply_filters( $this->plugin_name . 'label_retail_mark_2_from',
+			esc_html__( 'Segment 2 From', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'If price is more or equal to this',
+				'id'          => 'retail_mark_2_from',
+				'value'       => $this->options['retail_mark_2_from'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_2_to', apply_filters( $this->plugin_name . 'label_retail_mark_2_to',
+			esc_html__( 'Segment 2 To', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'and if price is less than this',
+				'id'          => 'retail_mark_2_to',
+				'value'       => $this->options['retail_mark_2_to'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_2_mark', apply_filters( $this->plugin_name . 'label_retail_mark_2_mark',
+			esc_html__( 'Segment 2 Mark', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'then add this mark on price. (2 is 200% increase)',
+				'id'          => 'retail_mark_2_mark',
+				'value'       => $this->options['retail_mark_2_mark'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_3_from', apply_filters( $this->plugin_name . 'label_retail_mark_3_from',
+			esc_html__( 'Segment 3 From', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'If price is more or equal to this',
+				'id'          => 'retail_mark_3_from',
+				'value'       => $this->options['retail_mark_3_from'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_3_to', apply_filters( $this->plugin_name . 'label_retail_mark_3_to',
+			esc_html__( 'Segment 3 To', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'and if price is less than this',
+				'id'          => 'retail_mark_3_to',
+				'value'       => $this->options['retail_mark_3_to'],
+			]
+		);
+
+		add_settings_field( 'option_retail_mark_3_mark', apply_filters( $this->plugin_name . 'label_retail_mark_3_mark',
+			esc_html__( 'Segment 3 Mark', 'woo-advanced-price-setter' )
+		), [ $this, 'field_text' ], $this->plugin_name, $this->plugin_name . '-retail-mark', [
+				'description' => 'then add this mark on price. (1.9 is 190% increase)',
+				'id'          => 'retail_mark_3_mark',
+				'value'       => $this->options['retail_mark_3_mark'],
 			]
 		);
 	}
