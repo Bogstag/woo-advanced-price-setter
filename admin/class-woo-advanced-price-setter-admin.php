@@ -131,7 +131,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		);
 		woocommerce_wp_text_input( [
 				'id'        => '_in_price_dollar',
-				'label'     => esc_html__( 'WAPS product prince', 'woo-advanced-price-setter' ) . ' ($)',
+				'label'     => esc_html__( 'WAPS product price', 'woo-advanced-price-setter' ) . ' ($)',
 				'data_type' => 'price',
 			]
 		);
@@ -155,7 +155,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		}
 		woocommerce_wp_text_input( [
 				'id'        => '_in_price_dollar_' . $variation->ID,
-				'label'     => esc_html__( 'WAPS product prince', 'woo-advanced-price-setter' ) . ' ($)',
+				'label'     => esc_html__( 'WAPS product price', 'woo-advanced-price-setter' ) . ' ($)',
 				'data_type' => 'price',
 				'value'     => $value,
 			]
@@ -169,6 +169,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		$price      = (float) $_POST['current_in_price_dollar'];
 		$product_id = intval( $_POST['post_id'] );
 		$this->waps_get_new_product_price( $price, $product_id, $dryRun = true );
+		echo $this->log;
 		wp_die();
 	}
 
@@ -229,7 +230,7 @@ class Woo_Advanced_Price_Setter_Admin {
 			) . ' per $'
 		);
 		$this->waps_log( $dryRun, 'New price after dollar rate calc: ' . wc_price( $price
-			)
+			) .' ('. esc_html( $price ) .')'
 		);
 
 		return $price;
