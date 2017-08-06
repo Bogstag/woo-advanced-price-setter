@@ -50,30 +50,31 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	 * Sets the class variable $options
 	 */
 	public function set_options() {
-		$this->options                 = get_option( $this->plugin_name . '-options' );
-		$defaults                      = [];
-		$defaults['dollar_rate']       = 1;
-		$defaults['customs_duties']    = 1;
-		$defaults['shipping_cost']     = 70;
-		$defaults['whole_mark_1_from'] = 0;
-		$defaults['whole_mark_1_to']   = 1200;
-		$defaults['whole_mark_1_mark'] = 1.25;
-		$defaults['whole_mark_2_from'] = 1200;
-		$defaults['whole_mark_2_to']   = 2000;
-		$defaults['whole_mark_2_mark'] = 1.2;
-		$defaults['whole_mark_3_from'] = 2000;
-		$defaults['whole_mark_3_to']   = 99999999999999;
-		$defaults['whole_mark_3_mark'] = 1.18;
-		$defaults['retail_mark_1_from'] = 0;
-		$defaults['retail_mark_1_to']   = 300;
-		$defaults['retail_mark_1_mark'] = 2.1;
-		$defaults['retail_mark_2_from'] = 300;
-		$defaults['retail_mark_2_to']   = 1000;
-		$defaults['retail_mark_2_mark'] = 2;
-		$defaults['retail_mark_3_from'] = 1000;
-		$defaults['retail_mark_3_to']   = 99999999999999;
-		$defaults['retail_mark_3_mark'] = 1.9;
-		$this->options                 = wp_parse_args( $this->options, $defaults );
+		$this->options = get_option( $this->plugin_name . '-options' );
+		$defaults      = [
+			'dollar_rate'        => 1,
+			'customs_duties'     => 1,
+			'shipping_cost'      => 70,
+			'whole_mark_1_from'  => 0,
+			'whole_mark_1_to'    => 1200,
+			'whole_mark_1_mark'  => 1.25,
+			'whole_mark_2_from'  => 1200,
+			'whole_mark_2_to'    => 2000,
+			'whole_mark_2_mark'  => 1.2,
+			'whole_mark_3_from'  => 2000,
+			'whole_mark_3_to'    => 99999999999999,
+			'whole_mark_3_mark'  => 1.18,
+			'retail_mark_1_from' => 0,
+			'retail_mark_1_to'   => 300,
+			'retail_mark_1_mark' => 2.1,
+			'retail_mark_2_from' => 300,
+			'retail_mark_2_to'   => 1000,
+			'retail_mark_2_mark' => 2,
+			'retail_mark_3_from' => 1000,
+			'retail_mark_3_to'   => 99999999999999,
+			'retail_mark_3_mark' => 1.9
+		];
+		$this->options = wp_parse_args( $this->options, $defaults );
 	}
 
 	public function get_options() {
@@ -116,7 +117,7 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	 * @return mixed
 	 */
 	public function validate_options_input( $input ) {
-		return str_replace(',', '.', $input);
+		return str_replace( ',', '.', $input );
 	}
 
 	/**
