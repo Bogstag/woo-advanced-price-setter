@@ -46,7 +46,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	/**
 	 * @since    1.0.0
 	 * @access   private
-	 * @var float $retailPrice
+	 * @var float|false $retailPrice
 	 */
 	private $retailPrice;
 
@@ -183,9 +183,9 @@ class Woo_Advanced_Price_Setter_Admin {
 	/**
 	 * Calcs the new price.
 	 *
-	 * @param float $price      WAPS Product price.
-	 * @param int   $product_id Woo Product Id.
-	 * @param bool  $dryRun     If true then output more info, for debug and test.
+	 * @param float   $price      WAPS Product price.
+	 * @param int     $product_id Woo Product Id.
+	 * @param boolean $dryRun     If true then output more info, for debug and test.
 	 *
 	 * @return false|double
 	 */
@@ -234,9 +234,9 @@ class Woo_Advanced_Price_Setter_Admin {
 
 			return $price;
 		}
-		$this->waps_log( $dryRun, 'Convert currency' );
 		$price = $price * $this->options['dollar_rate'];
 
+		$this->waps_log( $dryRun, 'Convert currency' );
 		$this->waps_log( $dryRun, 'Current dollar rate: ' . wc_price( $this->options['dollar_rate']
 			) . ' per $'
 		);
@@ -258,9 +258,9 @@ class Woo_Advanced_Price_Setter_Admin {
 
 			return $price;
 		}
-		$this->waps_log( $dryRun, 'Add custom duties' );
 		$price = $price * $this->options['customs_duties'];
 
+		$this->waps_log( $dryRun, 'Add custom duties' );
 		$this->waps_log( $dryRun, 'Current customs duties: ' . esc_html( $this->options['customs_duties'] ) );
 		$this->waps_log( $dryRun, 'Price after customs duties: ' . esc_html( $price ) );
 		$this->waps_log( $dryRun, '<hr/>' );
@@ -385,9 +385,9 @@ class Woo_Advanced_Price_Setter_Admin {
 	/**
 	 * @param            $price
 	 * @param wc_product $product
-	 * @param            $dryRun
+	 * @param boolean    $dryRun
 	 *
-	 * @return   float|bool   $retailPrice
+	 * @return   float|false   $retailPrice
 	 */
 	private function calc_waps_retail_segments( $price, $product, $dryRun ) {
 		if ( $price >= $this->options['retail_mark_1_from'] && $price < $this->options['retail_mark_1_to'] ) {
@@ -403,13 +403,10 @@ class Woo_Advanced_Price_Setter_Admin {
 		}
 		$retailPrice = ( $price * $mark );
 		$retailPrice = $this->waps_round( $retailPrice );
-
-		if ( $dryRun ) {
-			$this->waps_log( $dryRun, 'Set recomended retail price incl tax' );
-			$this->waps_log( $dryRun, 'Retail mark: ' . esc_html( $mark ) );
-			$this->waps_log( $dryRun, 'Price after retail mark and tax: ' . wc_price( $retailPrice ) );
-			$this->waps_log( $dryRun, '<hr/>' );
-		}
+		$this->waps_log( $dryRun, 'Set recomended retail price incl tax' );
+		$this->waps_log( $dryRun, 'Retail mark: ' . esc_html( $mark ) );
+		$this->waps_log( $dryRun, 'Price after retail mark and tax: ' . wc_price( $retailPrice ) );
+		$this->waps_log( $dryRun, '<hr/>' );
 
 		return $retailPrice;
 	}
@@ -497,8 +494,8 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @param $retailPrice
 	 */
 	private function waps_save_retail_price_attribute( $product_id, $retailPrice ) {
-		$term_taxonomy_ids = wp_set_object_terms( $product_id, $retailPrice, $this->options['retail_price_attribute'] );
-		$thedata           = [
+		wp_set_object_terms( $product_id, $retailPrice, $this->options['retail_price_attribute'] );
+		$thedata = [
 			$this->options['retail_price_attribute'] => [
 				'name'         => $this->options['retail_price_attribute'],
 				'value'        => $retailPrice,
