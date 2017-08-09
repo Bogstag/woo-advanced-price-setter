@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Advanced Price Setter v1.0.0\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2017-08-05 19:40+0200\n"
+"POT-Creation-Date: 2017-08-07 17:25+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Krister Bogstag <krister@bogstag.se>\n"
@@ -17,91 +17,164 @@ msgstr ""
 "X-Textdomain-Support: yesX-Generator: Poedit 1.6.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;"
-"_nx_noop:4c,1,2;_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;"
-"__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
+"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
+"_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Generator: Poedit 2.0.3\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:95
+#: admin/class-woo-advanced-price-setter-admin-settings.php:96
 msgid "Settings"
 msgstr "Inställningar"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:123
-msgid "Calculating options"
-msgstr "Beräknande inställningar"
-
 #: admin/class-woo-advanced-price-setter-admin-settings.php:129
-msgid "Wholesale mark"
-msgstr "Grossist marginal"
-
-#: admin/class-woo-advanced-price-setter-admin-settings.php:135
-msgid "Retail mark"
-msgstr "kundpris marginal"
-
-#: admin/class-woo-advanced-price-setter-admin-settings.php:141
 msgid "General options"
 msgstr "Generella inställningar"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:180
+#: admin/class-woo-advanced-price-setter-admin-settings.php:135
+msgid "Calculating options"
+msgstr "Beräknande inställningar"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:141
+msgid "Wholesale mark"
+msgstr "Grossist marginal"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:147
+msgid "Retail mark"
+msgstr "Kundpris marginal"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:156
+msgid "This options affect everything."
+msgstr "Dessa inställlningar påverkar allt."
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:163
+msgid "This settings adds wholesale mark"
+msgstr "Dessa inställningar lägger till marginalen för grossisten"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:170
+msgid "This settings adds retail mark"
+msgstr "Dessa inställningar lägger till marginalen för försäljaren"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:177
+msgid ""
+"You need to create a new attribute (Products->Attributes, type: Text) and "
+"enter the taxonomy name here . The attribute should be named like Retail "
+"price incl tax . The taxonomy name is in the status bar of your browser when "
+"hovering on attribute name ."
+msgstr ""
+"Du måste skapa ett nytt attribut (Products->Attributes, typ: Text) och "
+"skriva dess taxonomy namn här. Attributet borde heta något liknande som Rek. "
+"Kundpris inkl. moms. Taxonomy namnet kan hittas i din webbläsares status "
+"fält när du pekar på attribut namnet."
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:187
 msgid "Dollar exchange rate"
 msgstr "Dollar kurs"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:190
+#: admin/class-woo-advanced-price-setter-admin-settings.php:189
+msgid "Enter the dollar exchange rate here."
+msgstr "Skriv in den dollar kurs du vill använda."
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:197
 msgid "Customs duties"
 msgstr "Tullavgifter"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:200
+#: admin/class-woo-advanced-price-setter-admin-settings.php:199
+msgid "Enter the customs duties. (1 is default, 1.10 is 10% increase)"
+msgstr ""
+"Skriv in kostanden för tullavgifter (1 är standard, 1.10 är 10% ökning)"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:209
 msgid "Shipping cost"
 msgstr "Fraktkostnad"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:209
-#: admin/class-woo-advanced-price-setter-admin-settings.php:290
+#: admin/class-woo-advanced-price-setter-admin-settings.php:211
+#, php-format
+msgid "Shipping cost in %s per kg"
+msgstr "Fraktkostnad i %s per kg"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:220
+#: admin/class-woo-advanced-price-setter-admin-settings.php:310
 msgid "Segment 1 From"
 msgstr "Segment 1 från"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:218
-#: admin/class-woo-advanced-price-setter-admin-settings.php:299
+#: admin/class-woo-advanced-price-setter-admin-settings.php:222
+#: admin/class-woo-advanced-price-setter-admin-settings.php:252
+#: admin/class-woo-advanced-price-setter-admin-settings.php:282
+#: admin/class-woo-advanced-price-setter-admin-settings.php:312
+#: admin/class-woo-advanced-price-setter-admin-settings.php:342
+#: admin/class-woo-advanced-price-setter-admin-settings.php:372
+msgid "If price is more or equal to this"
+msgstr "Om priset är mer eller lika med detta"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:229
+#: admin/class-woo-advanced-price-setter-admin-settings.php:319
 msgid "Segment 1 To"
 msgstr "Segment 1 till"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:227
-#: admin/class-woo-advanced-price-setter-admin-settings.php:308
+#: admin/class-woo-advanced-price-setter-admin-settings.php:231
+#: admin/class-woo-advanced-price-setter-admin-settings.php:261
+#: admin/class-woo-advanced-price-setter-admin-settings.php:291
+#: admin/class-woo-advanced-price-setter-admin-settings.php:321
+#: admin/class-woo-advanced-price-setter-admin-settings.php:351
+#: admin/class-woo-advanced-price-setter-admin-settings.php:381
+msgid "and if price is less than this"
+msgstr "och om priset är mindre än detta"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:238
+#: admin/class-woo-advanced-price-setter-admin-settings.php:328
 msgid "Segment 1 Mark"
 msgstr "Segment 1 marginal"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:236
-#: admin/class-woo-advanced-price-setter-admin-settings.php:317
+#: admin/class-woo-advanced-price-setter-admin-settings.php:240
+#: admin/class-woo-advanced-price-setter-admin-settings.php:270
+#: admin/class-woo-advanced-price-setter-admin-settings.php:300
+#: admin/class-woo-advanced-price-setter-admin-settings.php:330
+#: admin/class-woo-advanced-price-setter-admin-settings.php:360
+#: admin/class-woo-advanced-price-setter-admin-settings.php:390
+#, php-format
+msgid "then add this mark on price. (%1$s is %2$s increase)"
+msgstr "så lägg till detta till priset. (%1$s är %2$s ökning)"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:250
+#: admin/class-woo-advanced-price-setter-admin-settings.php:340
 msgid "Segment 2 From"
 msgstr "Segment 2 från"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:245
-#: admin/class-woo-advanced-price-setter-admin-settings.php:326
+#: admin/class-woo-advanced-price-setter-admin-settings.php:259
+#: admin/class-woo-advanced-price-setter-admin-settings.php:349
 msgid "Segment 2 To"
 msgstr "Segment 2 till"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:254
-#: admin/class-woo-advanced-price-setter-admin-settings.php:335
+#: admin/class-woo-advanced-price-setter-admin-settings.php:268
+#: admin/class-woo-advanced-price-setter-admin-settings.php:358
 msgid "Segment 2 Mark"
 msgstr "Segment 2 marginal"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:263
-#: admin/class-woo-advanced-price-setter-admin-settings.php:344
+#: admin/class-woo-advanced-price-setter-admin-settings.php:280
+#: admin/class-woo-advanced-price-setter-admin-settings.php:370
 msgid "Segment 3 From"
 msgstr "Segment 3 från"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:272
-#: admin/class-woo-advanced-price-setter-admin-settings.php:353
+#: admin/class-woo-advanced-price-setter-admin-settings.php:289
+#: admin/class-woo-advanced-price-setter-admin-settings.php:379
 msgid "Segment 3 To"
 msgstr "Segment 3 till"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:281
-#: admin/class-woo-advanced-price-setter-admin-settings.php:362
+#: admin/class-woo-advanced-price-setter-admin-settings.php:298
+#: admin/class-woo-advanced-price-setter-admin-settings.php:388
 msgid "Segment 3 Mark"
 msgstr "Segment 3 marginal"
 
-#: admin/class-woo-advanced-price-setter-admin-settings.php:419
+#: admin/class-woo-advanced-price-setter-admin-settings.php:401
+msgid "Taxonomy of retail price attribute"
+msgstr "Taxonomy för rekomenderat kund pris"
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:403
+msgid "The name is starting with pa_xxx."
+msgstr "Namnet börjar med pa_xxx."
+
+#: admin/class-woo-advanced-price-setter-admin-settings.php:458
 msgid "WAPS Recalcualate"
 msgstr "WAPS omräkna"
 
@@ -114,34 +187,37 @@ msgstr "WAPS produkt pris"
 msgid "WAPS Dry Run"
 msgstr "WAPS torrkörning"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:32
+#: admin/class-woo-advanced-price-setter-product-list.php:31
 msgid "Product"
 msgstr "Produkt"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:33
+#: admin/class-woo-advanced-price-setter-product-list.php:32
 msgid "Products"
 msgstr "Produkter"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:65
+#: admin/class-woo-advanced-price-setter-product-list.php:64
 msgid "Name"
 msgstr "Namn"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:66
+#: admin/class-woo-advanced-price-setter-product-list.php:65
 msgid "Regular price"
 msgstr "Vanligt pris"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:67
+#: admin/class-woo-advanced-price-setter-product-list.php:66
 msgid "Sales price"
 msgstr "Rea pris"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:68
+#: admin/class-woo-advanced-price-setter-product-list.php:67
 msgid "Price"
 msgstr "Pris"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:69
+#: admin/class-woo-advanced-price-setter-product-list.php:68
 msgid "WAPS Price"
 msgstr "WAPS Pris"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:185
+#: admin/class-woo-advanced-price-setter-product-list.php:184
 msgid "No products avaliable."
 msgstr "Inga produkter tillgängliga."
+
+#~ msgid "then add this mark on price. (1.20 is 20% increase)"
+#~ msgstr "så lägg till detta till priset. (1.20 är 25% ökning)"
