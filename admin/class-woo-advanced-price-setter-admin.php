@@ -213,8 +213,8 @@ class Woo_Advanced_Price_Setter_Admin {
 	/**
 	 * Function to echo out the changes to price.
 	 *
-	 * @param bool   $dryRun
-	 * @param string $string
+	 * @param bool        $dryRun
+	 * @param string|null $string
 	 */
 	public function waps_log( $dryRun = false, $string ) {
 		if ( $dryRun ) {
@@ -469,10 +469,9 @@ class Woo_Advanced_Price_Setter_Admin {
 		if ( $product->is_type( 'variation' ) ) {
 			$productParent = wc_get_product( $product->get_parent_id() );
 			$prices        = $productParent->get_variation_prices( true );
-			$min_price     = $this->calc_waps_retail_segments( current( $prices['regular_price'] ), $productParent,
-				false
+			$min_price     = $this->calc_waps_retail_segments( current( $prices['regular_price'] ), false
 			);
-			$max_price     = $this->calc_waps_retail_segments( end( $prices['regular_price'] ), $productParent, false );
+			$max_price     = $this->calc_waps_retail_segments( end( $prices['regular_price'] ), false );
 			$retailPrice   = wc_price( $min_price ) . ' - ' . wc_price( $max_price );
 			$this->waps_save_retail_price_attribute( $product->get_parent_id(), $retailPrice );
 		} else {
