@@ -155,16 +155,11 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @param $variation
 	 */
 	public function waps_variable_add_in_price_and_button( $loop, $variation_data, $variation ) {
-		if ( isset( $variation_data['_in_price_dollar'][0] ) ) {
-			$value = esc_attr( $variation_data['_in_price_dollar'][0] );
-		} else {
-			$value = null;
-		}
 		woocommerce_wp_text_input( [
 				'id'        => '_in_price_dollar_' . $variation->ID,
 				'label'     => esc_html__( 'WAPS product price', $this->plugin_name ) . ' ($)',
 				'data_type' => 'price',
-				'value'     => $value,
+				'value'     => esc_attr( $variation_data['_in_price_dollar'][0] ),
 			]
 		);
 	}
@@ -448,7 +443,6 @@ class Woo_Advanced_Price_Setter_Admin {
 		if ( $price ) {
 			$this->waps_update_price( $product_id, $price );
 			WC_Product_Variable::sync( $product_id, 0 );
-			//todo: Save retail price to product attribute. Bara Inkl moms
 
 			if ( $this->retailPrice ) {
 				$this->waps_set_retail_price_attribute( $product_id );
@@ -467,13 +461,14 @@ class Woo_Advanced_Price_Setter_Admin {
 		$product = wc_get_product( $product_id );
 
 		if ( $product->is_type( 'variation' ) ) {
-			$productParent = wc_get_product( $product->get_parent_id() );
+			$parentId      = $product->get_parent_id();
+			$productParent = wc_get_product( $parentId );
 			$prices        = $productParent->get_variation_prices( true );
 			$min_price     = $this->calc_waps_retail_segments( current( $prices['regular_price'] ), false
 			);
 			$max_price     = $this->calc_waps_retail_segments( end( $prices['regular_price'] ), false );
 			$retailPrice   = wc_price( $min_price ) . ' - ' . wc_price( $max_price );
-			$this->waps_save_retail_price_attribute( $product->get_parent_id(), $retailPrice );
+			$this->waps_save_retail_price_attribute( $parentId, $retailPrice );
 		} else {
 			$this->waps_save_retail_price_attribute( $product_id, wc_price( $this->retailPrice ) );
 		}
@@ -486,15 +481,20 @@ class Woo_Advanced_Price_Setter_Admin {
 	 */
 	private function waps_save_retail_price_attribute( $product_id, $retailPrice ) {
 		wp_set_object_terms( $product_id, $retailPrice, $this->options['retail_price_attribute'] );
-		$thedata = [
-			$this->options['retail_price_attribute'] => [
+
+		$attributes = get_post_meta( $product_id, '_product_attributes' );
+		$attributes = $attributes[0];
+		if ( ! array_key_exists( $this->options['retail_price_attribute'], $attributes ) ) {
+			$attributes[ sanitize_title( $this->options['retail_price_attribute'] ) ] = [
 				'name'         => $this->options['retail_price_attribute'],
 				'value'        => $retailPrice,
 				'is_visible'   => '1',
 				'is_variation' => '0',
 				'is_taxonomy'  => '1'
-			]
-		];
-		update_post_meta( $product_id, '_product_attributes', $thedata );
+			];
+			update_post_meta( $product_id, '_product_attributes', $attributes );
+
+		}
 	}
+
 }
