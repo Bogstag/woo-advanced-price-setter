@@ -129,14 +129,14 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	}
 
 	/**
-	 * @return false|float
+	 * @return double
 	 */
 	public function getNewSalesPrice() {
 		return $this->new_sales_price;
 	}
 
 	/**
-	 * @return false|float
+	 * @return string
 	 */
 	public function getRetailPrice() {
 		return $this->retailPrice;
