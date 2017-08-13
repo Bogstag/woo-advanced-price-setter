@@ -112,7 +112,8 @@ class Woo_Advanced_Price_Setter {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woo-advanced-price-setter-admin.php';
-
+		require_once plugin_dir_path( dirname( __FILE__ )
+		             ) . 'admin/class-woo-advanced-price-setter-admin-calculation.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woo-advanced-price-setter-product-list.php';
 
 		/**

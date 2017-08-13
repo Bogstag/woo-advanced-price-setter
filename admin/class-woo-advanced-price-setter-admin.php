@@ -31,24 +31,13 @@ class Woo_Advanced_Price_Setter_Admin {
 	private $version;
 
 	/**
-	 * Variable to hold log messages.
-	 * @var null
-	 */
-	private $log;
-
-	/**
+	 * Options of the plugin
+	 *
 	 * @since    1.0.0
-	 * @access   private
-	 * @var float $new_sales_price
+	 *
+	 * @var array Array with all options and defaults.
 	 */
-	private $new_sales_price;
-
-	/**
-	 * @since    1.0.0
-	 * @access   private
-	 * @var float|false $retailPrice
-	 */
-	private $retailPrice;
+	public $options;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -66,15 +55,6 @@ class Woo_Advanced_Price_Setter_Admin {
 		$this->options     = $options;
 
 	}
-
-	/**
-	 * Options of the plugin
-	 *
-	 * @since    1.0.0
-	 *
-	 * @var array Array with all options and defaults.
-	 */
-	public $options;
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -170,232 +150,10 @@ class Woo_Advanced_Price_Setter_Admin {
 	public function waps_dryrun() {
 		$price      = (float) $_POST['current_in_price_dollar'];
 		$product_id = intval( $_POST['post_id'] );
-		$this->waps_get_new_product_price( $price, $product_id, $dryRun = true );
-		echo $this->log;
+		$calc       = new Woo_Advanced_Price_Setter_Admin_Calculation( $this->options, $price, $product_id, true
+		);
+		echo $calc->getLog();
 		wp_die();
-	}
-
-	/**
-	 * Calcs the new price.
-	 *
-	 * @param float   $price      WAPS Product price.
-	 * @param int     $product_id Woo Product Id.
-	 * @param boolean $dryRun     If true then output more info, for debug and test.
-	 *
-	 * @return false|double
-	 */
-	public function waps_get_new_product_price( $price, $product_id, $dryRun = false ) {
-		if ( ! $price > 0 ) {
-			$this->waps_log( true, 'Price is zero or less, cant do calc' );
-
-			return false;
-		}
-		$product = wc_get_product( $product_id );
-
-		$price    = wc_format_decimal( $price, false, false );
-		$price    = $this->calc_waps_dollar_rate( $price, $dryRun );
-		$price    = $this->calc_waps_customs_duties( $price, $dryRun );
-		$price    = $this->calc_waps_shipping_cost( $price, $product, $dryRun );
-		$price    = $this->calc_waps_all_segments( $price, $dryRun );
-		$rawPrice = $price;
-		$price    = $this->calc_waps_num_of_dec( $price, $dryRun );
-		$this->calc_waps_new_sales_price( $rawPrice, $product, $dryRun );
-		$this->retailPrice = $this->calc_waps_retail_segments( $rawPrice, $dryRun );
-
-		return $price;
-	}
-
-	/**
-	 * Function to echo out the changes to price.
-	 *
-	 * @param bool        $dryRun
-	 * @param string|null $string
-	 */
-	public function waps_log( $dryRun = false, $string ) {
-		if ( $dryRun ) {
-			$this->log = $this->log . $string . '<hr/>';
-		}
-	}
-
-	/**
-	 * @param float   $price
-	 * @param boolean $dryRun
-	 *
-	 * @return float $price
-	 */
-	private function calc_waps_dollar_rate( $price, $dryRun ) {
-		if ( empty( $this->options['dollar_rate'] ) || ! $this->options['dollar_rate'] > 0 ) {
-			$this->waps_log( true, 'Dollar rate calc skipped, missing setting or less then zero.' );
-
-			return $price;
-		}
-		$price = $price * $this->options['dollar_rate'];
-
-		$this->waps_log( $dryRun, 'Convert currency<br/>Current dollar rate: ' . wc_price( $this->options['dollar_rate']
-			) . ' per $<br/>New price after dollar rate calc: ' . esc_html( $price )
-		);
-
-		return $price;
-	}
-
-	/**
-	 * @param float   $price
-	 * @param boolean $dryRun
-	 *
-	 * @return float $price
-	 */
-	private function calc_waps_customs_duties( $price, $dryRun ) {
-		if ( empty( $this->options['customs_duties'] ) || ! $this->options['customs_duties'] > 0 ) {
-			$this->waps_log( true, 'Customs duties calc skipped, missing setting or less then zero.' );
-
-			return $price;
-		}
-		$price = $price * $this->options['customs_duties'];
-
-		$this->waps_log( $dryRun,
-			'Add custom duties<br/>Current customs duties: ' . esc_html( $this->options['customs_duties']
-			) . '<br/>Price after customs duties: ' . esc_html( $price )
-		);
-
-		return $price;
-	}
-
-	/**
-	 * @param float      $price
-	 * @param wc_product $product
-	 * @param boolean    $dryRun
-	 *
-	 * @return float $price
-	 */
-	private function calc_waps_shipping_cost( $price, $product, $dryRun ) {
-		if ( empty( $this->options['shipping_cost'] ) || ! $this->options['shipping_cost'] > 0 ) {
-			$this->waps_log( true, 'Customs duties calc skipped, missing shipping cost' );
-
-			return $price;
-		}
-		$waps_prod_weight_kg = wc_get_weight( $product->get_weight(), 'kg' );
-
-		if ( empty( $waps_prod_weight_kg ) || ! $waps_prod_weight_kg > 0 ) {
-			if ( $product->is_type( 'variation' ) ) {
-				$this->waps_log( true, 'Customs duties calc skipped, missing variation product weight' );
-
-				return $price;
-			} else {
-				$this->waps_log( true, 'Customs duties calc skipped, missing product weight' );
-
-				return $price;
-			}
-		}
-		$price = $price + ( $this->options['shipping_cost'] * $waps_prod_weight_kg );
-
-		$this->waps_log( $dryRun,
-			'Add shipping costs<br/>Current shipping costs: ' . wc_price( $this->options['shipping_cost']
-			) . ' per kg<br/>Product weight in kg: ' . esc_html( $waps_prod_weight_kg
-			) . '<br/>Price after shipping costs: ' . esc_html( $price )
-		);
-
-		return $price;
-	}
-
-	/**
-	 * @param float   $price
-	 * @param boolean $dryRun
-	 *
-	 * @return float $price
-	 */
-	private function calc_waps_all_segments( $price, $dryRun ) {
-
-		if ( $price >= $this->options['whole_mark_1_from'] && $price < $this->options['whole_mark_1_to'] ) {
-			$mark = $this->options['whole_mark_1_mark'];
-		} elseif ( $price >= $this->options['whole_mark_2_from'] && $price < $this->options['whole_mark_2_to'] ) {
-			$mark = $this->options['whole_mark_2_mark'];
-		} elseif ( $price >= $this->options['whole_mark_3_from'] && $price < $this->options['whole_mark_3_to'] ) {
-			$mark = $this->options['whole_mark_3_mark'];
-		} else {
-			echo '<p>Whole mark calc skipped</p>';
-
-			return $price;
-		}
-		$price = $price * $mark;
-		$this->waps_log( $dryRun, 'Add wholesale profit<br/>Wholesale mark: ' . esc_html( $mark
-			) . '<br/>Price after wholesale mark: ' . esc_html( $price )
-		);
-
-		return $price;
-	}
-
-	/**
-	 * @param float   $price
-	 * @param boolean $dryRun
-	 *
-	 * @return float $price
-	 */
-	private function calc_waps_num_of_dec( $price, $dryRun ) {
-		$price = $this->waps_round( $price );
-		$this->waps_log( $dryRun, 'Round price<br/>Price after rounded: ' . wc_price( $price ) );
-
-		return $price;
-	}
-
-	/**
-	 * @param double $value
-	 *
-	 * @return float
-	 */
-	private function waps_round( $value ) {
-		$waps_num_of_dec = get_option( 'aps_num_of_dec', absint( get_option( 'woocommerce_price_num_decimals', 2 ) )
-		);
-
-		return round( $value, $waps_num_of_dec );
-	}
-
-	/**
-	 * @param float      $price
-	 * @param wc_product $product
-	 * @param boolean    $dryRun
-	 */
-	private function calc_waps_new_sales_price( $price, $product, $dryRun ) {
-		$sale_price = $product->get_sale_price();
-		$reg_price  = $product->get_regular_price();
-		unset( $this->new_sales_price );
-
-		if ( empty( $sale_price ) || ! $sale_price > 0 ) {
-			$this->waps_log( true, 'New sales price calc skipped, missing price or less then zero.' );
-		} else {
-			$precent_sale          = $sale_price / $reg_price;
-			$this->new_sales_price = $this->waps_round( $price * $precent_sale );
-			$this->waps_log( $dryRun,
-				'Set new sales price (if on sale)<br/>Current sale %: ' . esc_html( $precent_sale * 100
-				) . '<br/>New sales price: ' . wc_price( $this->new_sales_price )
-			);
-		}
-	}
-
-	/**
-	 * @param            $price
-	 * @param boolean    $dryRun
-	 *
-	 * @return   float|false   $retailPrice
-	 */
-	private function calc_waps_retail_segments( $price, $dryRun ) {
-		if ( $price >= $this->options['retail_mark_1_from'] && $price < $this->options['retail_mark_1_to'] ) {
-			$mark = $this->options['retail_mark_1_mark'];
-		} elseif ( $price >= $this->options['retail_mark_2_from'] && $price < $this->options['retail_mark_2_to'] ) {
-			$mark = $this->options['retail_mark_2_mark'];
-		} elseif ( $price >= $this->options['retail_mark_3_from'] && $price < $this->options['retail_mark_3_to'] ) {
-			$mark = $this->options['retail_mark_3_mark'];
-		} else {
-			echo '<p>Retail mark calc skipped</p>';
-
-			return false;
-		}
-		$retailPrice = ( $price * $mark );
-		$retailPrice = $this->waps_round( $retailPrice );
-		$this->waps_log( $dryRun, 'Set recomended retail price incl tax<br/>Retail mark: ' . esc_html( $mark
-			) . '<br/>Price after retail mark and tax: ' . wc_price( $retailPrice )
-		);
-
-		return $retailPrice;
 	}
 
 	/**
@@ -417,6 +175,27 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
+	 * @param integer $product_id
+	 * @param float   $waps_price
+	 */
+	public function waps_update_product( $product_id, $waps_price ) {
+		update_post_meta( $product_id, '_in_price_dollar', $waps_price );
+		$calc = new Woo_Advanced_Price_Setter_Admin_Calculation( $this->options, $waps_price, $product_id );
+
+		if ( $calc->getPrice() ) {
+			$this->waps_update_price( $product_id, $calc->getPrice() );
+			WC_Product_Variable::sync( $product_id, 0 );
+
+			if ( $calc->getRetailPrice() ) {
+				$this->waps_save_retail_price_attribute( $calc );
+			}
+			echo $calc->getLog();
+		} else {
+			print_r( new WP_Error( 'price', 'No WAPS price found' ) );
+		}
+	}
+
+	/**
 	 * Actually changes the price.
 	 *
 	 * @param string $product_id Product Id.
@@ -434,60 +213,22 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
-	 * @param integer $product_id
-	 * @param float   $waps_price
+	 * @param Woo_Advanced_Price_Setter_Admin_Calculation $calc
 	 */
-	public function waps_update_product( $product_id, $waps_price ) {
-		update_post_meta( $product_id, '_in_price_dollar', $waps_price );
-		$price = $this->waps_get_new_product_price( $waps_price, $product_id );
-		if ( $price ) {
-			$this->waps_update_price( $product_id, $price );
-			WC_Product_Variable::sync( $product_id, 0 );
-
-			if ( $this->retailPrice ) {
-				$this->waps_set_retail_price_attribute( $product_id );
-			}
-			echo $this->log;
-			$this->log = null;
+	private function waps_save_retail_price_attribute( $calc ) {
+		if ( $calc->getProductParent() ) {
+			$product_id = $calc->getProductParent()->get_id();
 		} else {
-			print_r( new WP_Error( 'price', 'No WAPS price found' ) );
+			$product_id = $calc->getProduct()->get_id();
 		}
-	}
-
-	/**
-	 * @param int $product_id
-	 */
-	private function waps_set_retail_price_attribute( $product_id ) {
-		$product = wc_get_product( $product_id );
-
-		if ( $product->is_type( 'variation' ) ) {
-			$parentId      = $product->get_parent_id();
-			$productParent = wc_get_product( $parentId );
-			$prices        = $productParent->get_variation_prices( true );
-			$min_price     = $this->calc_waps_retail_segments( current( $prices['regular_price'] ), false
-			);
-			$max_price     = $this->calc_waps_retail_segments( end( $prices['regular_price'] ), false );
-			$retailPrice   = wc_price( $min_price ) . ' - ' . wc_price( $max_price );
-			$this->waps_save_retail_price_attribute( $parentId, $retailPrice );
-		} else {
-			$this->waps_save_retail_price_attribute( $product_id, wc_price( $this->retailPrice ) );
-		}
-
-	}
-
-	/**
-	 * @param $product_id
-	 * @param $retailPrice
-	 */
-	private function waps_save_retail_price_attribute( $product_id, $retailPrice ) {
-		wp_set_object_terms( $product_id, $retailPrice, $this->options['retail_price_attribute'] );
+		wp_set_object_terms( $product_id, $calc->getRetailPrice(), $this->options['retail_price_attribute'] );
 
 		$attributes = get_post_meta( $product_id, '_product_attributes' );
 		$attributes = $attributes[0];
 		if ( ! array_key_exists( $this->options['retail_price_attribute'], $attributes ) ) {
 			$attributes[ sanitize_title( $this->options['retail_price_attribute'] ) ] = [
 				'name'         => $this->options['retail_price_attribute'],
-				'value'        => $retailPrice,
+				'value'        => $calc->getRetailPrice(),
 				'is_visible'   => '1',
 				'is_variation' => '0',
 				'is_taxonomy'  => '1'
