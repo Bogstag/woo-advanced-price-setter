@@ -312,6 +312,12 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 		);
 	}
 
+	/**
+	 * @param float  $price
+	 * @param string $optionName
+	 *
+	 * @return false|float
+	 */
 	private function waps_get_mark_from_segments( $price, $optionName ) {
 		if ( $price >= $this->options[ $optionName . '_1_from' ] && $price < $this->options[ $optionName . '_1_to' ] ) {
 			return $this->options[ $optionName . '_1_mark' ];
