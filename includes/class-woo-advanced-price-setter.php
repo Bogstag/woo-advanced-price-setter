@@ -175,8 +175,6 @@ class Woo_Advanced_Price_Setter {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		//$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_admin_notices' );
-		//$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_notices_init' );
 		$this->loader->add_action( 'woocommerce_product_options_pricing', $plugin_admin, 'waps_add_in_price_and_button'
 		);
 		$this->loader->add_action( 'woocommerce_process_product_meta_simple', $plugin_admin,

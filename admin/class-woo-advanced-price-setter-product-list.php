@@ -98,7 +98,6 @@ class Woo_Advanced_Price_Setter_Product_List extends WP_List_Table {
 		$current_page = $this->get_pagenum();
 		$data         = $this->get_products_waps( $per_page, $current_page );
 		$total_items  = self::record_count();
-		//$data         = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
 		$this->items = $data;
 		$this->set_pagination_args( [
 				'total_items' => $total_items,                  //WE have to calculate the total number of items
