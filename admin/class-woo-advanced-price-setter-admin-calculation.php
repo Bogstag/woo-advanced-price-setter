@@ -228,15 +228,9 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	}
 
 	private function calc_waps_all_segments() {
-
-		if ( $this->price >= $this->options['whole_mark_1_from'] && $this->price < $this->options['whole_mark_1_to'] ) {
-			$mark = $this->options['whole_mark_1_mark'];
-		} elseif ( $this->price >= $this->options['whole_mark_2_from'] && $this->price < $this->options['whole_mark_2_to'] ) {
-			$mark = $this->options['whole_mark_2_mark'];
-		} elseif ( $this->price >= $this->options['whole_mark_3_from'] && $this->price < $this->options['whole_mark_3_to'] ) {
-			$mark = $this->options['whole_mark_3_mark'];
-		} else {
-			echo '<p>Whole mark calc skipped</p>';
+		$mark = $this->waps_get_mark_from_segments( $this->price, 'whole_mark' );
+		if ( ! $mark ) {
+			$this->waps_log( true, 'Whole mark calc skipped' );
 
 			return;
 		}
@@ -288,13 +282,8 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	 * @return false|array
 	 */
 	private function calc_waps_retail_segments( $price ) {
-		if ( $price >= $this->options['retail_mark_1_from'] && $price < $this->options['retail_mark_1_to'] ) {
-			$mark = $this->options['retail_mark_1_mark'];
-		} elseif ( $price >= $this->options['retail_mark_2_from'] && $price < $this->options['retail_mark_2_to'] ) {
-			$mark = $this->options['retail_mark_2_mark'];
-		} elseif ( $price >= $this->options['retail_mark_3_from'] && $price < $this->options['retail_mark_3_to'] ) {
-			$mark = $this->options['retail_mark_3_mark'];
-		} else {
+		$mark = $this->waps_get_mark_from_segments( $price, 'retail_mark' );
+		if ( ! $mark ) {
 			$this->waps_log( true, 'Retail mark calc skipped' );
 
 			return false;
@@ -321,5 +310,17 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 		$this->waps_log( $this->dryRun, 'Set recommended retail price incl tax<br/>Retail mark: ' . esc_html( $mark
 			) . '<br/>Price after retail mark and tax: ' . $this->retailPrice
 		);
+	}
+
+	private function waps_get_mark_from_segments( $price, $optionName ) {
+		if ( $price >= $this->options[ $optionName . '_1_from' ] && $price < $this->options[ $optionName . '_1_to' ] ) {
+			return $this->options[ $optionName . '_1_mark' ];
+		} elseif ( $price >= $this->options[ $optionName . '_2_from' ] && $price < $this->options[ $optionName . '_2_to' ] ) {
+			return $this->options[ $optionName . '_2_mark' ];
+		} elseif ( $price >= $this->options[ $optionName . '_3_from' ] && $price < $this->options[ $optionName . '_3_to' ] ) {
+			return $this->options[ $optionName . '_3_mark' ];
+		} else {
+			return false;
+		}
 	}
 }
