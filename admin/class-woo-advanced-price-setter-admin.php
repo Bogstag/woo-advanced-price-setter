@@ -37,7 +37,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 *
 	 * @var array Array with all options and defaults.
 	 */
-	public $options;
+	private $options;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -128,7 +128,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
-	 * Adds WAPS to variation product page.
+	 * Adds WAPS price input field to variation product page.
 	 *
 	 * @param $loop
 	 * @param $variation_data
@@ -152,7 +152,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		$product_id = intval( $_POST['post_id'] );
 		$calc       = new Woo_Advanced_Price_Setter_Admin_Calculation( $this->options, $price, $product_id, true
 		);
-		echo $calc->getLog();
+		echo (string) $calc->getLog();
 		wp_die();
 	}
 
@@ -191,7 +191,7 @@ class Woo_Advanced_Price_Setter_Admin {
 					$calc->getProductParent()->get_id()
 				);
 			}
-			echo $calc->getLog();
+			echo (string) $calc->getLog();
 		} else {
 			print_r( new WP_Error( 'price', 'No WAPS price found' ) );
 		}
@@ -200,13 +200,13 @@ class Woo_Advanced_Price_Setter_Admin {
 	/**
 	 * Actually changes the price.
 	 *
-	 * @param integer $product_id
-	 * @param float   $price
-	 * @param float   $new_sales_price
+	 * @param integer     $product_id
+	 * @param float       $price
+	 * @param false|float $new_sales_price
 	 */
 	private function waps_update_price( $product_id, $price, $new_sales_price ) {
 		update_post_meta( $product_id, '_regular_price', $price );
-		if ( $calc->getNewSalesPrice() ) {
+		if ( $new_sales_price ) {
 			update_post_meta( $product_id, '_sale_price', $new_sales_price );
 			update_post_meta( $product_id, '_price', $new_sales_price );
 		} else {
@@ -221,7 +221,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @param      integer|false $parentProduct_id
 	 */
 	private function waps_save_retail_price_attribute( $product_id, $retailPrice, $parentProduct_id ) {
-		if ( $parentProduct_id ) {
+		if ( $parentProduct_id !== null ) {
 			$product_id = $parentProduct_id;
 		}
 		wp_set_object_terms( $product_id, $retailPrice, $this->options['retail_price_attribute'] );

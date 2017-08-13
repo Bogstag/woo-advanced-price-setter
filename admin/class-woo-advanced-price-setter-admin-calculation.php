@@ -285,7 +285,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	/**
 	 * @param $price
 	 *
-	 * @return array|bool
+	 * @return false|array
 	 */
 	private function calc_waps_retail_segments( $price ) {
 		if ( $price >= $this->options['retail_mark_1_from'] && $price < $this->options['retail_mark_1_to'] ) {
