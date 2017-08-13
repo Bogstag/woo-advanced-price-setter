@@ -129,7 +129,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	}
 
 	/**
-	 * @return double
+	 * @return double|false
 	 */
 	public function getNewSalesPrice() {
 		return $this->new_sales_price;

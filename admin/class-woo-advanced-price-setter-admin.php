@@ -166,6 +166,7 @@ class Woo_Advanced_Price_Setter_Admin {
 		} else {
 			$waps_price = $_POST['_in_price_dollar'];
 		}
+		$waps_price = filter_var( $waps_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
 
 		if ( isset( $waps_price ) && $waps_price > 0 ) {
 			$this->waps_update_product( $product_id, $waps_price );
@@ -187,13 +188,20 @@ class Woo_Advanced_Price_Setter_Admin {
 			WC_Product_Variable::sync( $product_id, 0 );
 
 			if ( $calc->getRetailPrice() ) {
-				$this->waps_save_retail_price_attribute( $calc->getProduct()->get_id(), $calc->getRetailPrice(),
-					$calc->getProductParent()->get_id()
-				);
+				if ( $calc->getProductParent() ) {
+					$this->waps_save_retail_price_attribute( $calc->getProduct()->get_id(), $calc->getRetailPrice(),
+						$calc->getProductParent()->get_id()
+					);
+				} else {
+					$this->waps_save_retail_price_attribute( $calc->getProduct()->get_id(), $calc->getRetailPrice(),
+						false
+					);
+				}
 			}
 			echo (string) $calc->getLog();
 		} else {
 			print_r( new WP_Error( 'price', 'No WAPS price found' ) );
+			wp_die();
 		}
 	}
 
