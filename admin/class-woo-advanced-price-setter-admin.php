@@ -162,11 +162,10 @@ class Woo_Advanced_Price_Setter_Admin {
 	public function waps_woocommerce_save_new_waps_price( $product_id ) {
 		$product = wc_get_product( $product_id );
 		if ( $product->is_type( 'variation' ) ) {
-			$waps_price = $_POST[ '_in_price_dollar_' . $product_id ];
+			$waps_price = (float) $_POST[ '_in_price_dollar_' . $product_id ];
 		} else {
-			$waps_price = $_POST['_in_price_dollar'];
+			$waps_price = (float) $_POST['_in_price_dollar'];
 		}
-		$waps_price = filter_var( $waps_price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
 
 		if ( isset( $waps_price ) && $waps_price > 0 ) {
 			$this->waps_update_product( $product_id, $waps_price );
