@@ -62,7 +62,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	 *
 	 * @since    1.0.0
 	 *
-	 * @var false|float $retailPrice
+	 * @var string $retailPrice
 	 */
 	private $retailPrice = false;
 
@@ -77,6 +77,9 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 
 	/**
 	 * Variable to hold log messages.
+	 *
+	 * @since    1.0.0
+	 *
 	 * @var false|string $log
 	 */
 	private $log;
@@ -173,31 +176,33 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	}
 
 	private function calc_waps_dollar_rate() {
-		if ( empty( $this->options['dollar_rate'] ) || ! $this->options['dollar_rate'] > 0 ) {
-			$this->waps_log( true, 'Dollar rate calc skipped, missing setting or less then zero.' );
-
-			return;
-		}
-		$this->price = $this->price * $this->options['dollar_rate'];
-
-		$this->waps_log( $this->dryRun,
-			'Convert currency<br/>Current dollar rate: ' . wc_price( $this->options['dollar_rate']
-			) . ' per $<br/>New price after dollar rate calc: ' . esc_html( $this->price )
+		$this->multiply_price_and_another_variable( $this->options['dollar_rate'],
+			'Dollar rate calc skipped, missing setting or less then zero.',
+			'Convert currency<br/>Current dollar rate: %1$s per $<br/>New price after dollar rate calc: %2$s'
 		);
 	}
 
 	private function calc_waps_customs_duties() {
-		if ( empty( $this->options['customs_duties'] ) || ! $this->options['customs_duties'] > 0 ) {
-			$this->waps_log( true, 'Customs duties calc skipped, missing setting or less then zero.' );
+		$this->multiply_price_and_another_variable( $this->options['customs_duties'],
+			'Customs duties calc skipped, missing setting or less then zero.',
+			'Add custom duties<br/>Current customs duties: %1$s<br/>Price after customs duties: %2$s'
+		);
+	}
+
+	/**
+	 * @param float  $option
+	 * @param string $errorMessage
+	 * @param string $logMessage
+	 */
+	private function multiply_price_and_another_variable( $option, $errorMessage, $logMessage ) {
+		if ( empty( $option ) || ! $option > 0 ) {
+			$this->waps_log( true, $errorMessage );
 
 			return;
 		}
-		$this->price = $this->price * $this->options['customs_duties'];
+		$this->price = $this->price * $option;
 
-		$this->waps_log( $this->dryRun,
-			'Add custom duties<br/>Current customs duties: ' . esc_html( $this->options['customs_duties']
-			) . '<br/>Price after customs duties: ' . esc_html( $this->price )
-		);
+		$this->waps_log( $this->dryRun, sprintf( $logMessage, $option, $this->price ) );
 	}
 
 	private function calc_waps_shipping_cost() {
@@ -277,6 +282,11 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 
 	}
 
+	/**
+	 * @param $price
+	 *
+	 * @return array|bool
+	 */
 	private function calc_waps_retail_segments( $price ) {
 		if ( $price >= $this->options['retail_mark_1_from'] && $price < $this->options['retail_mark_1_to'] ) {
 			$mark = $this->options['retail_mark_1_mark'];

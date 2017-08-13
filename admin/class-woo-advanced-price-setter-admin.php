@@ -183,11 +183,13 @@ class Woo_Advanced_Price_Setter_Admin {
 		$calc = new Woo_Advanced_Price_Setter_Admin_Calculation( $this->options, $waps_price, $product_id );
 
 		if ( $calc->getPrice() ) {
-			$this->waps_update_price( $product_id, $calc->getPrice() );
+			$this->waps_update_price( $calc->getProduct()->get_id(), $calc->getPrice(), $calc->getNewSalesPrice() );
 			WC_Product_Variable::sync( $product_id, 0 );
 
 			if ( $calc->getRetailPrice() ) {
-				$this->waps_save_retail_price_attribute( $calc );
+				$this->waps_save_retail_price_attribute( $calc->getProduct()->get_id(), $calc->getRetailPrice(),
+					$calc->getProductParent()->get_id()
+				);
 			}
 			echo $calc->getLog();
 		} else {
@@ -198,14 +200,15 @@ class Woo_Advanced_Price_Setter_Admin {
 	/**
 	 * Actually changes the price.
 	 *
-	 * @param string $product_id Product Id.
-	 * @param float  $price
+	 * @param integer $product_id
+	 * @param float   $price
+	 * @param float   $new_sales_price
 	 */
-	private function waps_update_price( $product_id, $price ) {
+	private function waps_update_price( $product_id, $price, $new_sales_price ) {
 		update_post_meta( $product_id, '_regular_price', $price );
-		if ( $this->new_sales_price ) {
-			update_post_meta( $product_id, '_sale_price', $this->new_sales_price );
-			update_post_meta( $product_id, '_price', $this->new_sales_price );
+		if ( $calc->getNewSalesPrice() ) {
+			update_post_meta( $product_id, '_sale_price', $new_sales_price );
+			update_post_meta( $product_id, '_price', $new_sales_price );
 		} else {
 			update_post_meta( $product_id, '_price', $price );
 		}
@@ -213,22 +216,22 @@ class Woo_Advanced_Price_Setter_Admin {
 	}
 
 	/**
-	 * @param Woo_Advanced_Price_Setter_Admin_Calculation $calc
+	 * @param      integer       $product_id
+	 * @param      float         $retailPrice
+	 * @param      integer|false $parentProduct_id
 	 */
-	private function waps_save_retail_price_attribute( $calc ) {
-		if ( $calc->getProductParent() ) {
-			$product_id = $calc->getProductParent()->get_id();
-		} else {
-			$product_id = $calc->getProduct()->get_id();
+	private function waps_save_retail_price_attribute( $product_id, $retailPrice, $parentProduct_id ) {
+		if ( $parentProduct_id ) {
+			$product_id = $parentProduct_id;
 		}
-		wp_set_object_terms( $product_id, $calc->getRetailPrice(), $this->options['retail_price_attribute'] );
+		wp_set_object_terms( $product_id, $retailPrice, $this->options['retail_price_attribute'] );
 
 		$attributes = get_post_meta( $product_id, '_product_attributes' );
 		$attributes = $attributes[0];
 		if ( ! array_key_exists( $this->options['retail_price_attribute'], $attributes ) ) {
 			$attributes[ sanitize_title( $this->options['retail_price_attribute'] ) ] = [
 				'name'         => $this->options['retail_price_attribute'],
-				'value'        => $calc->getRetailPrice(),
+				'value'        => $retailPrice,
 				'is_visible'   => '1',
 				'is_variation' => '0',
 				'is_taxonomy'  => '1'
