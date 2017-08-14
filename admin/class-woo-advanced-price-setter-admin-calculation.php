@@ -124,7 +124,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	/**
 	 * @return float
 	 */
-	public function getPrice(): float {
+	public function getPrice() {
 		return $this->price;
 	}
 
@@ -159,7 +159,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	/**
 	 * @return wc_product
 	 */
-	public function getProduct(): wc_product {
+	public function getProduct() {
 		return $this->product;
 	}
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Advanced Price Setter v1.0.0\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2017-08-10 13:45+0200\n"
+"POT-Creation-Date: 2017-08-13 19:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Krister Bogstag <krister@bogstag.se>\n"
@@ -186,12 +186,12 @@ msgstr "Namnet börjar med pa_ och sedan slug namnet."
 msgid "WAPS Recalcualate"
 msgstr "WAPS omräkna"
 
-#: admin/class-woo-advanced-price-setter-admin.php:141
-#: admin/class-woo-advanced-price-setter-admin.php:165
+#: admin/class-woo-advanced-price-setter-admin.php:121
+#: admin/class-woo-advanced-price-setter-admin.php:140
 msgid "WAPS product price"
 msgstr "WAPS produkt pris"
 
-#: admin/class-woo-advanced-price-setter-admin.php:145
+#: admin/class-woo-advanced-price-setter-admin.php:125
 msgid "WAPS Dry Run"
 msgstr "WAPS torrkörning"
 
@@ -223,7 +223,7 @@ msgstr "Pris"
 msgid "WAPS Price"
 msgstr "WAPS Pris"
 
-#: admin/class-woo-advanced-price-setter-product-list.php:184
+#: admin/class-woo-advanced-price-setter-product-list.php:183
 msgid "No products avaliable."
 msgstr "Inga produkter tillgängliga."
 
