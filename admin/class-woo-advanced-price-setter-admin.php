@@ -148,7 +148,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * Ajax calls this function to display drurun results.
 	 */
 	public function waps_dryrun() {
-		$price      = (float) $_POST['current_in_price_dollar'];
+		$price      = $_POST['current_in_price_dollar'];
 		$product_id = intval( $_POST['post_id'] );
 		$calc       = new Woo_Advanced_Price_Setter_Admin_Calculation( $this->options, $price, $product_id, true
 		);
@@ -162,9 +162,9 @@ class Woo_Advanced_Price_Setter_Admin {
 	public function waps_woocommerce_save_new_waps_price( $product_id ) {
 		$product = wc_get_product( $product_id );
 		if ( $product->is_type( 'variation' ) ) {
-			$waps_price = (float) $_POST[ '_in_price_dollar_' . $product_id ];
+			$waps_price = $_POST[ '_in_price_dollar_' . $product_id ];
 		} else {
-			$waps_price = (float) $_POST['_in_price_dollar'];
+			$waps_price = $_POST['_in_price_dollar'];
 		}
 
 		if ( isset( $waps_price ) && $waps_price > 0 ) {
