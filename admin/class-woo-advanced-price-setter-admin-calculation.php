@@ -107,8 +107,6 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 			wp_die( 'Price is zero or less, cant do calc' );
 		}
 
-		$this->price = wc_format_decimal( $this->price, false, false );
-
 		$this->calc_waps_dollar_rate();
 		$this->calc_waps_customs_duties();
 		$this->calc_waps_shipping_cost();
