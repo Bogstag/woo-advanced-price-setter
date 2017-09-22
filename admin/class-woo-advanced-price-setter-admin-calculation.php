@@ -76,6 +76,15 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	private $productParent = false;
 
 	/**
+	 * Dollar Price
+	 *
+	 * @since    1.0.0
+	 *
+	 * @var float $productParent
+	 */
+	private $dollarPrice = 0;
+
+	/**
 	 * Variable to hold log messages.
 	 *
 	 * @since    1.0.0
@@ -164,6 +173,13 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	}
 
 	/**
+	 * @return float
+	 */
+	public function getDollarPrice() {
+		return $this->dollarPrice;
+	}
+
+	/**
 	 * Function to echo out the changes to price.
 	 *
 	 * @param bool        $dryRun
@@ -176,7 +192,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	}
 
 	private function calc_waps_dollar_rate() {
-		$this->multiply_price_and_another_variable( $this->options['dollar_rate'],
+		$this->dollarPrice = $this->multiply_price_and_another_variable( $this->options['dollar_rate'],
 			'Dollar rate calc skipped, missing setting or less then zero.',
 			'Convert currency<br/>Current dollar rate: %1$s per $<br/>New price after dollar rate calc: %2$s'
 		);
@@ -203,6 +219,8 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 		$this->price = $this->price * $option;
 
 		$this->waps_log( $this->dryRun, sprintf( $logMessage, $option, $this->price ) );
+
+		return $this->price;
 	}
 
 	private function calc_waps_shipping_cost() {
@@ -228,7 +246,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	}
 
 	private function calc_waps_all_segments() {
-		$mark = $this->waps_get_mark_from_segments( $this->price, 'whole_mark' );
+		$mark = $this->waps_get_mark_from_segments( $this->dollarPrice, 'whole_mark' );
 		if ( ! $mark ) {
 			$this->waps_log( true, 'Whole mark calc skipped' );
 
@@ -282,7 +300,7 @@ class Woo_Advanced_Price_Setter_Admin_Calculation {
 	 * @return false|array
 	 */
 	private function calc_waps_retail_segments( $price ) {
-		$mark = $this->waps_get_mark_from_segments( $price, 'retail_mark' );
+		$mark = $this->waps_get_mark_from_segments( $this->dollarPrice, 'retail_mark' );
 		if ( ! $mark ) {
 			$this->waps_log( true, 'Retail mark calc skipped' );
 
