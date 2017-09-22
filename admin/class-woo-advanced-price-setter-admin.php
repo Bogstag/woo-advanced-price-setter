@@ -223,7 +223,7 @@ class Woo_Advanced_Price_Setter_Admin {
 	 * @param      integer|false $parentProduct_id
 	 */
 	private function waps_save_retail_price_attribute( $product_id, $retailPrice, $parentProduct_id ) {
-		if ( $parentProduct_id !== null ) {
+		if ( $parentProduct_id !== false ) {
 			$product_id = $parentProduct_id;
 		}
 		wp_set_object_terms( $product_id, $retailPrice, $this->options['retail_price_attribute'] );
