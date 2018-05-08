@@ -91,12 +91,12 @@ class Woo_Advanced_Price_Setter_Admin_Settings {
 	 * @return string[] The modified array of links
 	 */
 	public function link_settings( $links ) {
-		$links[] = sprintf( '<a href="%s">%s</a>',
+		$settings_link[] = sprintf( '<a href="%s">%s</a>',
 			esc_url( admin_url( 'options-general.php?page=' . $this->plugin_name ) ),
 			esc_html__( 'Settings', $this->plugin_name )
 		);
 
-		return $links;
+		return array_merge( $links, $settings_link );
 	}
 
 	/**

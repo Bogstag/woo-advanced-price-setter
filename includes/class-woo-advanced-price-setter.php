@@ -162,7 +162,9 @@ class Woo_Advanced_Price_Setter {
 			$this->get_version()
 		);
 
-		$this->loader->add_filter( 'plugin_action_links', $plugin_admin_settings, 'link_settings' );
+		$plugin_basename = ( dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/' . $this->plugin_name. '.php' );
+		
+		$this->loader->add_filter( 'plugin_action_links_'.$plugin_basename, $plugin_admin_settings, 'link_settings' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin_settings, 'waps_options_page' );
 		$this->loader->add_action( 'admin_init', $plugin_admin_settings, 'register_settings' );
 		$this->loader->add_action( 'admin_init', $plugin_admin_settings, 'register_sections' );
